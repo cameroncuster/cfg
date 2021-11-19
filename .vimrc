@@ -52,18 +52,18 @@ autocmd BufNewFile *.cpp -r ~/Templates/template-cpp.cpp
 autocmd BufNewFile *.java -r ~/Templates/template-java.java
 
 " test
-noremap <F5> :w!<CR>:<C-u>!g++ -std=c++17 -Wall %:r.cpp && cat > in &&
+noremap <F5> :w!<CR>:<C-u>!g++ -std=c++20 -Wall %:r.cpp && cat > in &&
 			\ ./a.out < in && rm a.out in<CR>
 
 noremap <F6> :w!<CR>:<C-u>!g++ -Wall -Wextra -pedantic -Wno-unused-result
-			\ -DLOCAL -std=c++17 -O2 -Wshadow -Wformat=2 -Wfloat-equal
+			\ -DLOCAL -std=c++20 -O2 -Wshadow -Wformat=2 -Wfloat-equal
 			\ -Wcast-qual -Wcast-align -D_GLIBCXX_DEBUG
 			\ -D_GLIBCXX_DEBUG_PEDANTIC -fsanitize=undefined
 			\ -fno-sanitize-recover=all -fstack-protector %:r.cpp &&
 			\ cat > in && ./a.out < in && rm a.out in<CR>
 
 noremap <F7> :w!<CR>:<C-u>!g++ -g -Wall -Wextra -pedantic -Wno-unused-result
-			\ -DLOCAL -std=c++17 -Wshadow -Wformat=2 -Wfloat-equal -Wcast-qual
+			\ -DLOCAL -std=c++20 -Wshadow -Wformat=2 -Wfloat-equal -Wcast-qual
 			\ -Wcast-align -D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC
 			\ -fsanitize=undefined -fno-sanitize-recover=all
 			\ -fstack-protector %:r.cpp && cat > in &&
