@@ -48,7 +48,7 @@ let c_no_curly_error=1
 inoremap {<CR> {<CR>}<ESC>O
 
 " template (add for each file type and extension)
-autocmd BufNewFile *.cpp -r ~/Templates/template.cpp
+autocmd BufNewFile *.cpp -r ~/programming_team_code/template.cpp
 
 " test
 autocmd filetype cpp noremap <F5> :w!<CR>:<C-u>!g++ -std=c++17 -Wall %:r.cpp && cat > in &&
