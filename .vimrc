@@ -29,15 +29,6 @@ set pastetoggle=<f1>
 set listchars=tab:\|\ ,trail:_ list
 cal matchadd('ColorColumn', '\%81v.', 100)
 
-function! StripTrailingWhitespace()
-	normal mZ
-	let l:chars = col("$")
-	%s/\s\+$//e
-	normal `Z
-endfunction
-
-autocmd BufWritePre * call StripTrailingWhitespace()
-
 " speed
 inoremap kj <ESC>
 
@@ -45,7 +36,6 @@ inoremap kj <ESC>
 set showmatch
 set matchpairs+=<:>
 let c_no_curly_error=1
-inoremap {<CR> {<CR>}<ESC>O
 
 " template (add for each file type and extension)
 autocmd BufNewFile *.cpp -r ~/programming_team_code/library/contest/template.cpp
