@@ -27,7 +27,6 @@ set shiftwidth=4
 set softtabstop=4
 set pastetoggle=<f1>
 set listchars=tab:\|\ ,trail:_ list
-cal matchadd('ColorColumn', '\%81v.', 100)
 
 " speed
 inoremap kj <ESC>
