@@ -1,7 +1,9 @@
 " custom (golfed)
-colorscheme habamax
 set cin aw ai is ts=4 sw=4 nu noeb bg=dark ru cul
 sy on   |   im kj <esc>
+
+" show tabs and trailing spaces
+set listchars=tab:\|\ ,trail:_ list
 
 " template buffer
 autocmd BufNewFile *.cpp -r ~/programming_team_code/library/contest/template.cpp
