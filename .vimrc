@@ -3,13 +3,9 @@ set wildmenu
 filetype indent on
 set aw ai is ts=2 sw=2 nu noeb ru cul cindent cino=j1,(0,ws,Ws
 sy on   |   im kj <esc>
-colorscheme default
 
 " show tabs and trailing spaces
 set listchars=tab:\|\ ,trail:_ list
-
-" template buffer
-autocmd BufNewFile *.cpp -r ~/programming_team_code/library/contest/template.cpp
 
 " <F5> fast compile
 autocmd filetype cpp noremap <F5> :w!<CR>:<C-u>!g++ -std=c++20 %:r.cpp && cat > in && ./a.out < in && rm a.out in<CR>
