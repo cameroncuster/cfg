@@ -115,3 +115,6 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
+
+# neovim
+export PATH="$PATH:/opt/nvim-linux64/bin"
