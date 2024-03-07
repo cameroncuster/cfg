@@ -43,7 +43,9 @@ vim.api.nvim_set_keymap('n', '<F10>', -- save, run test
 vim.api.nvim_set_keymap('n', '<C-t>', '<CMD>NvimTreeToggle<CR>', {noremap = true}) -- open nvim tree
 
 -- enhancements
-vim.api.nvim_create_autocmd('BufWrite', { pattern = '*.cpp,*.hpp,*.lua,*.html,*.css', command = 'silent! execute \'%s/\\s\\+$//ge\'' }) -- remove trailing white space during writes
+vim.api.nvim_create_autocmd('BufNewFile', { pattern = '*.cpp', command = '-r template.cpp' }) -- new cpp files default to template
+vim.api.nvim_create_autocmd('BufWritePre', { pattern = '*.cpp', command = 'silent! FormatWrite' }) -- format cpp files on save
+vim.api.nvim_create_autocmd('BufWritePre', { pattern = '*.cpp,*.hpp,*.lua,*.html,*.css', command = 'silent! execute \'%s/\\s\\+$//ge\'' }) -- remove trailing white space during writes
 
 local ensure_packer = function()
 	local fn = vim.fn
