@@ -60,19 +60,12 @@ local packer_bootstrap = ensure_packer()
 
 require('packer').startup(function() -- :PackerSync to reload (run after all changes)
 	use 'wbthomason/packer.nvim' -- Packer can manage itself
-	use 'karb94/neoscroll.nvim' -- smooth scroll
+	use {'github/copilot.vim', branch = 'release' } -- copilot
 	use 'kyazdani42/nvim-tree.lua' -- better file tree than Netrw
-	use { -- better git integration
-	'lewis6991/gitsigns.nvim',
-	requires = {
-		'nvim-lua/plenary.nvim'
-	},
-}
-use 'norcalli/nvim-colorizer.lua' -- show color for hex codes
+	use { 'lewis6991/gitsigns.nvim', requires = { 'nvim-lua/plenary.nvim' } } -- better git integration
+	use 'norcalli/nvim-colorizer.lua' -- show color for hex codes
 end)
-vim.cmd('colorscheme pablo')
 vim.cmd('highlight Normal guibg=none') -- transparency
-require('neoscroll').setup({ mappings = {'<C-u>', '<C-d>', 'zt', 'zz', 'zb'} }) -- importantly, not <C-e> and <C-y>
 -- delete ctrl-k so it uses my 6j keymap instead
 -- https://github.com/nvim-tree/nvim-tree.lua/blob/master/doc/nvim-tree-lua.txt
 local function my_on_attach(bufnr)
