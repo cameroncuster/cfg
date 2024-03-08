@@ -23,16 +23,17 @@ vim.api.nvim_set_keymap('i', 'kj', '<ESC>', {noremap = true}) -- the OG keymap!
 vim.api.nvim_set_keymap('i', '<TAB>', '<C-n>', {noremap = true}) -- tab completion
 vim.api.nvim_set_keymap('i', '<S-TAB>', '<C-p>', {noremap = true})
 vim.api.nvim_set_keymap('c', 'W', 'w', {noremap = true}) -- :W now writes
-vim.api.nvim_set_keymap('n', '<F5>', -- save, remove old executable, and compile
+exec = 'cat input && echo "----" && ./%:r.out < input'
+vim.api.nvim_set_keymap('n', '<F5>', -- save, compile, and run
 '<CMD>w!<CR>' ..
-'<CMD>!rm --force %:r.out && g++ -Wall -std=c++20 %:r.cpp -o %:r.out<CR>', {noremap = true})
-compile_flags = '-Wall -Wextra -Wunused -Wpedantic -Wshadow -Wlogical-op -Wformat=2 -Wfloat-equal -Wcast-qual -Wcast-align -Wshift-overflow=2 -Wduplicated-cond -O2 -std=c++20 -fstack-protector -D_GLIBCXX_DEBUG -D_GLIBCXX_SANITIZE_VECTOR -D_GLIBCXX_DEBUG_PEDANTIC -D_GLIBCXX_ASSERTIONS -D_FORTIFY_SOURCE=2'
-vim.api.nvim_set_keymap('n', '<F6>', -- save, remove old executable, and compile (with flags)
+'<CMD>!g++ -g -Wall -std=c++20 %:r.cpp -o %:r.out &&' .. exec .. '<CR>', {noremap = true})
+compile_flags = '-Wall -Wextra -Wunused -Wpedantic -Wshadow -Wlogical-op -Wformat=2 -Wfloat-equal -Wcast-qual -Wcast-align -Wshift-overflow=2 -Wduplicated-cond -std=c++20 -fstack-protector -D_GLIBCXX_DEBUG -D_GLIBCXX_SANITIZE_VECTOR -D_GLIBCXX_DEBUG_PEDANTIC -D_GLIBCXX_ASSERTIONS -D_FORTIFY_SOURCE=2'
+vim.api.nvim_set_keymap('n', '<F6>', -- save, compile with flags, and run
 '<CMD>w!<CR>' ..
-'<CMD>!rm --force %:r.out && g++ ' .. compile_flags .. ' %:r.cpp -o %:r.out<CR>', {noremap = true})
+'<CMD>!g++ ' .. compile_flags .. ' %:r.cpp -o %:r.out &&' .. exec .. '<CR>', {noremap = true})
+vim.api.nvim_set_keymap('n', '<F7>', -- run in GDB
+'<CMD>term cat input && echo "----" && gdb -q -ex \'set args < input\' %:r.out<CR>', {noremap = true})
 vim.api.nvim_set_keymap('n', '<F8>', '<CMD>term cat > input<CR>', {noremap = true}) -- create input file
-vim.api.nvim_set_keymap('n', '<F9>', '<CMD>!touch input && cat input && echo "----" && ./%:r.out < input<CR>', {noremap = true}) -- run code
-vim.api.nvim_set_keymap('n', '<F10>', '<CMD>!touch input && cat input && echo "----" && gdb -q -ex \'set args < input\' %:r.out<CR>', {noremap = true}) -- run code with GDB
 
 -- auto commands
 vim.api.nvim_create_autocmd('BufNewFile', {pattern = '*.cpp', command = '-r template.cpp'}) -- new cpp files default to template
