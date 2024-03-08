@@ -67,3 +67,6 @@ lspconfig.clangd.setup{} -- CPP
 -- autoformat on save
 vim.cmd('autocmd FileType cpp ClangFormatAutoEnable')
 
+-- color the copilot suggestions
+vim.cmd('highlight link CopilotSuggestion Comment')
+
