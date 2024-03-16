@@ -23,17 +23,51 @@ vim.api.nvim_set_keymap('i', 'kj', '<ESC>', {noremap = true}) -- the OG keymap!
 vim.api.nvim_set_keymap('i', '<TAB>', '<C-n>', {noremap = true}) -- tab completion
 vim.api.nvim_set_keymap('i', '<S-TAB>', '<C-p>', {noremap = true})
 vim.api.nvim_set_keymap('c', 'W', 'w', {noremap = true}) -- :W now writes
+
+-- compile and run
 exec = 'cat input && echo "----" && ./%:r.out < input'
-vim.api.nvim_set_keymap('n', '<F5>', -- save, compile, and run
-'<CMD>w!<CR>' ..
-'<CMD>!g++ -g -Wall -std=c++20 %:r.cpp -o %:r.out && ' .. exec .. '<CR>', {noremap = true})
-compile_flags = '-Wall -Wextra -Wunused -Wpedantic -Wshadow -Wlogical-op -Wformat=2 -Wfloat-equal -Wcast-qual -Wcast-align -Wshift-overflow=2 -Wduplicated-cond -std=c++20 -fstack-protector -D_GLIBCXX_DEBUG -D_GLIBCXX_SANITIZE_VECTOR -D_GLIBCXX_DEBUG_PEDANTIC -D_GLIBCXX_ASSERTIONS -D_FORTIFY_SOURCE=2'
-vim.api.nvim_set_keymap('n', '<F6>', -- save, compile with flags, and run
-'<CMD>w!<CR>' ..
-'<CMD>!g++ ' .. compile_flags .. ' %:r.cpp -o %:r.out && ' .. exec .. '<CR>', {noremap = true})
-vim.api.nvim_set_keymap('n', '<F7>', -- run in GDB
-'<CMD>term cat input && echo "----" && gdb -q -ex \'set args < input\' %:r.out<CR>', {noremap = true})
-vim.api.nvim_set_keymap('n', '<F8>', '<CMD>term cat > input<CR>', {noremap = true}) -- create input file
+compile_flags = ' -g'
+             .. ' -Wall'
+             .. ' -Wextra'
+             .. ' -Wunused'
+             .. ' -Wshadow'
+             .. ' -Wpedantic'
+             .. ' -Wformat=2'
+             .. ' -Wlogical-op'
+             .. ' -Wfloat-equal'
+             .. ' -Wcast-qual'
+             .. ' -Wcast-align'
+             .. ' -Wshift-overflow=2'
+             .. ' -Wduplicated-cond'
+             .. ' -std=c++20'
+             .. ' -fstack-protector'
+             --.. ' -fsanitize=address,undefined' does not play nice with GDB
+             .. ' -D_GLIBCXX_DEBUG'
+             .. ' -D_GLIBCXX_SANITIZE_VECTOR'
+             .. ' -D_GLIBCXX_DEBUG_PEDANTIC'
+             .. ' -D_GLIBCXX_ASSERTIONS'
+             .. ' -D_FORTIFY_SOURCE=2'
+
+-- save, compile, and quick run
+vim.api.nvim_set_keymap('n', '<F4>', '<CMD>w!<CR><CMD>!g++ -std=c++20 -Wall -O2 %:r.cpp -o %:r.out && ' .. exec .. '<CR>', {noremap = true})
+
+-- save, quick compile, and run
+vim.api.nvim_set_keymap('n', '<F5>', '<CMD>w!<CR><CMD>!g++ -std=c++20 -Wall %:r.cpp -o %:r.out && ' .. exec .. '<CR>', {noremap = true})
+
+-- save, debug compile, and run
+vim.api.nvim_set_keymap('n', '<F6>', '<CMD>w!<CR><CMD>!g++ ' .. compile_flags .. ' %:r.cpp -o %:r.out && ' .. exec .. '<CR>', {noremap = true})
+
+-- debug with GDB
+vim.api.nvim_set_keymap('n', '<F7>', '<CMD>terminal cat input && echo "----" && gdb -q -ex \'set args < input\' %:r.out<CR>', {noremap = true})
+
+-- rip input from clipboard
+vim.api.nvim_set_keymap('n', '<F8>', '<CMD>!wl-paste > input && cat input<CR>', {noremap = true})
+
+-- type a custom input
+vim.api.nvim_set_keymap('n', '<F9>', '<CMD>terminal cat > input<CR>', {noremap = true})
+
+-- run
+vim.api.nvim_set_keymap('n', '<F10>', '<CMD>!' .. exec .. '<CR>', {noremap = true})
 
 -- auto commands
 vim.api.nvim_create_autocmd('BufNewFile', {pattern = '*.cpp', command = '-r template.cpp'}) -- new cpp files default to template
