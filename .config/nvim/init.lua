@@ -27,26 +27,26 @@ vim.api.nvim_set_keymap('c', 'W', 'w', {noremap = true}) -- :W now writes
 -- compile and run
 exec = 'cat input && echo "----" && ./%:r.out < input'
 compile_flags = ' -g'
-             .. ' -Wall'
-             .. ' -Wextra'
-             .. ' -Wunused'
-             .. ' -Wshadow'
-             .. ' -Wpedantic'
-             .. ' -Wformat=2'
-             .. ' -Wlogical-op'
-             .. ' -Wfloat-equal'
-             .. ' -Wcast-qual'
-             .. ' -Wcast-align'
-             .. ' -Wshift-overflow=2'
-             .. ' -Wduplicated-cond'
-             .. ' -std=c++20'
-             .. ' -fstack-protector'
-             --.. ' -fsanitize=address,undefined' does not play nice with GDB
-             .. ' -D_GLIBCXX_DEBUG'
-             .. ' -D_GLIBCXX_SANITIZE_VECTOR'
-             .. ' -D_GLIBCXX_DEBUG_PEDANTIC'
-             .. ' -D_GLIBCXX_ASSERTIONS'
-             .. ' -D_FORTIFY_SOURCE=2'
+.. ' -Wall'
+.. ' -Wextra'
+.. ' -Wunused'
+.. ' -Wshadow'
+.. ' -Wpedantic'
+.. ' -Wformat=2'
+.. ' -Wlogical-op'
+.. ' -Wfloat-equal'
+.. ' -Wcast-qual'
+.. ' -Wcast-align'
+.. ' -Wshift-overflow=2'
+.. ' -Wduplicated-cond'
+.. ' -std=c++20'
+.. ' -fstack-protector'
+--.. ' -fsanitize=address,undefined' does not play nice with GDB
+.. ' -D_GLIBCXX_DEBUG'
+.. ' -D_GLIBCXX_SANITIZE_VECTOR'
+.. ' -D_GLIBCXX_DEBUG_PEDANTIC'
+.. ' -D_GLIBCXX_ASSERTIONS'
+.. ' -D_FORTIFY_SOURCE=2'
 
 -- save, compile, and quick run
 vim.api.nvim_set_keymap('n', '<F4>', '<CMD>w!<CR><CMD>!g++ -std=c++20 -Wall -O2 %:r.cpp -o %:r.out && ' .. exec .. '<CR>', {noremap = true})
@@ -88,18 +88,62 @@ end
 local packer_bootstrap = ensure_packer()
 
 require('packer').startup(function() -- :PackerSync to reload (run after all changes)
-  use 'wbthomason/packer.nvim' -- Packer can manage itself
-  use 'neovim/nvim-lspconfig' -- language server protocol
-  use 'rhysd/vim-clang-format' -- autoformat
-  use { 'github/copilot.vim', branch = 'release' } -- copilot
+  -- packer can manage itself
+  use 'wbthomason/packer.nvim'
+
+  -- lsp
+  use 'neovim/nvim-lspconfig'
+  use 'simrat39/rust-tools.nvim'
+  use 'rust-lang/rust.vim'
+  use 'rhysd/vim-clang-format'
+
+  -- mason
+  use 'williamboman/mason.nvim'
+
+  -- copilot
+  use { 'github/copilot.vim', branch = 'release' }
 end)
 
 -- LSP
 local lspconfig = require('lspconfig')
 lspconfig.clangd.setup{} -- CPP
+lspconfig.rust_analyzer.setup {
+  -- server-specific settings. See `:help lspconfig-setup`
+  settings = {
+    ['rust-analyzer'] = {
+      checkOnSave = {
+        command = 'clippy',
+      },
+    },
+  },
+} -- rust
+
+local rt = require('rust-tools')
+rt.setup({
+  server = {
+    on_attach = function(_, bufnr)
+      -- hover actions
+      vim.keymap.set("n", "<C-space>", rt.hover_actions.hover_actions, { buffer = bufnr })
+      -- code action groups
+      vim.keymap.set("n", "<Leader>a", rt.code_action_group.code_action_group, { buffer = bufnr })
+    end,
+  },
+})
+
+local format_sync_grp = vim.api.nvim_create_augroup("Format", {})
+vim.api.nvim_create_autocmd("BufWritePre", {
+  pattern = "*.rs",
+  callback = function()
+    vim.lsp.buf.format({ timeout_ms = 200 })
+  end,
+  group = format_sync_grp,
+})
 
 -- autoformat on save
 vim.cmd('autocmd FileType cpp ClangFormatAutoEnable')
+
+-- mason Setup
+require('mason').setup()
 
 -- color the copilot suggestions
 vim.cmd('highlight link CopilotSuggestion Comment')
