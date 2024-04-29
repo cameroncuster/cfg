@@ -74,35 +74,32 @@ vim.api.nvim_create_autocmd('BufNewFile', {pattern = '*.cpp', command = '-r temp
 vim.api.nvim_create_autocmd('BufWritePre', {pattern = '*.cpp,*.hpp', command = 'silent! execute \'%s/\\s\\+$//ge\''}) -- remove trailing white space during writes
 
 -- package management
-local ensure_packer = function()
-  local fn = vim.fn
-  local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
-  if fn.empty(fn.glob(install_path)) > 0 then
-    fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path})
-    vim.cmd [[packadd packer.nvim]]
-    return true
-  end
-  return false
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
+  vim.fn.system({
+    'git',
+    'clone',
+    '--filter=blob:none',
+    'https://github.com/folke/lazy.nvim.git',
+    '--branch=stable', -- latest stable release
+    lazypath,
+  })
 end
+vim.opt.rtp:prepend(lazypath)
 
-local packer_bootstrap = ensure_packer()
-
-require('packer').startup(function() -- :PackerSync to reload (run after all changes)
-  -- packer can manage itself
-  use 'wbthomason/packer.nvim'
-
+require('lazy').setup({
   -- lsp
-  use 'neovim/nvim-lspconfig'
-  use 'simrat39/rust-tools.nvim'
-  use 'rust-lang/rust.vim'
-  use 'rhysd/vim-clang-format'
+  'neovim/nvim-lspconfig',
+  'simrat39/rust-tools.nvim',
+  'rust-lang/rust.vim',
+  'rhysd/vim-clang-format',
 
   -- mason
-  use 'williamboman/mason.nvim'
+  'williamboman/mason.nvim',
 
   -- copilot
-  use { 'github/copilot.vim', branch = 'release' }
-end)
+  { 'github/copilot.vim', branch = 'release' },
+})
 
 -- LSP
 local lspconfig = require('lspconfig')
