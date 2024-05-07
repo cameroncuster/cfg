@@ -1,3 +1,8 @@
+-- Notes
+--
+-- LSP and formatters are installed locally
+-- Exclusively supports *.cpp for c++ (*.cxx and *.cc are not supported)
+
 -- settings
 vim.opt.number = true -- show line numbers
 len = 2
@@ -24,57 +29,78 @@ vim.api.nvim_set_keymap('i', '<TAB>', '<C-n>', {noremap = true}) -- tab completi
 vim.api.nvim_set_keymap('i', '<S-TAB>', '<C-p>', {noremap = true})
 vim.api.nvim_set_keymap('c', 'W', 'w', {noremap = true}) -- :W now writes
 
--- compile and run
-exec = 'cat input && echo "----" && ./%:r.out < input'
-compile_flags = ' -g'
-.. ' -Wall'
-.. ' -Wextra'
-.. ' -Wunused'
-.. ' -Wshadow'
-.. ' -Wpedantic'
-.. ' -Wformat=2'
-.. ' -Wlogical-op'
-.. ' -Wfloat-equal'
-.. ' -Wcast-qual'
-.. ' -Wcast-align'
-.. ' -Wshift-overflow=2'
-.. ' -Wduplicated-cond'
-.. ' -std=c++20'
-.. ' -fstack-protector'
---.. ' -fsanitize=address,undefined' does not play nice with GDB
-.. ' -D_GLIBCXX_DEBUG'
-.. ' -D_GLIBCXX_SANITIZE_VECTOR'
-.. ' -D_GLIBCXX_DEBUG_PEDANTIC'
-.. ' -D_GLIBCXX_ASSERTIONS'
-.. ' -D_FORTIFY_SOURCE=2'
+vim.api.nvim_set_keymap('n', '<F8>', '<CMD>!wl-paste > input && cat input<CR>', {noremap = true}) -- rip input from clipboard
+vim.api.nvim_set_keymap('n', '<F9>', '<CMD>terminal cat > input<CR>', {noremap = true}) -- type a custom input
 
--- save, compile, and quick run
-vim.api.nvim_set_keymap('n', '<F4>', '<CMD>w!<CR><CMD>!g++ -std=c++20 -Wall -O2 %:r.cpp -o %:r.out && ' .. exec .. '<CR>', {noremap = true})
+-- c++ specific keymaps
+vim.api.nvim_create_autocmd('Filetype', {
+  pattern = 'cpp',
+  callback = function()
+    -- compile and run
+    exec = 'cat input && echo "----" && ./%:r.out < input'
+    compile_flags = ' -g'
+    .. ' -Wall'
+    .. ' -Wextra'
+    .. ' -Wunused'
+    .. ' -Wshadow'
+    .. ' -Wpedantic'
+    .. ' -Wformat=2'
+    .. ' -Wlogical-op'
+    .. ' -Wfloat-equal'
+    .. ' -Wcast-qual'
+    .. ' -Wcast-align'
+    .. ' -Wshift-overflow=2'
+    .. ' -Wduplicated-cond'
+    .. ' -std=c++20'
+    .. ' -fstack-protector'
+    --.. ' -fsanitize=address,undefined' does not play nice with GDB
+    .. ' -D_GLIBCXX_DEBUG'
+    .. ' -D_GLIBCXX_SANITIZE_VECTOR'
+    .. ' -D_GLIBCXX_DEBUG_PEDANTIC'
+    .. ' -D_GLIBCXX_ASSERTIONS'
+    .. ' -D_FORTIFY_SOURCE=2'
 
--- save, quick compile, and run
-vim.api.nvim_set_keymap('n', '<F5>', '<CMD>w!<CR><CMD>!g++ -std=c++20 -Wall %:r.cpp -o %:r.out && ' .. exec .. '<CR>', {noremap = true})
+    -- save, compile, and quick run
+    vim.api.nvim_set_keymap('n', '<F4>', '<CMD>w!<CR><CMD>!g++ -std=c++20 -Wall -O2 %:r.cpp -o %:r.out && ' .. exec .. '<CR>', {noremap = true})
 
--- save, debug compile, and run
-vim.api.nvim_set_keymap('n', '<F6>', '<CMD>w!<CR><CMD>!g++ ' .. compile_flags .. ' %:r.cpp -o %:r.out && ' .. exec .. '<CR>', {noremap = true})
+    -- save, quick compile, and run
+    vim.api.nvim_set_keymap('n', '<F5>', '<CMD>w!<CR><CMD>!g++ -std=c++20 -Wall %:r.cpp -o %:r.out && ' .. exec .. '<CR>', {noremap = true})
 
--- debug with GDB
-vim.api.nvim_set_keymap('n', '<F7>', '<CMD>terminal cat input && echo "----" && gdb -q -ex \'set args < input\' %:r.out<CR>', {noremap = true})
+    -- save, debug compile, and run
+    vim.api.nvim_set_keymap('n', '<F6>', '<CMD>w!<CR><CMD>!g++ ' .. compile_flags .. ' %:r.cpp -o %:r.out && ' .. exec .. '<CR>', {noremap = true})
 
--- rip input from clipboard
-vim.api.nvim_set_keymap('n', '<F8>', '<CMD>!wl-paste > input && cat input<CR>', {noremap = true})
+    -- debug with GDB
+    vim.api.nvim_set_keymap('n', '<F7>', '<CMD>terminal cat input && echo "----" && gdb -q -ex \'set args < input\' %:r.out<CR>', {noremap = true})
 
--- type a custom input
-vim.api.nvim_set_keymap('n', '<F9>', '<CMD>terminal cat > input<CR>', {noremap = true})
+    -- run
+    vim.api.nvim_set_keymap('n', '<F10>', '<CMD>!' .. exec .. '<CR>', {noremap = true})
+  end,
+})
 
--- run
-vim.api.nvim_set_keymap('n', '<F10>', '<CMD>!' .. exec .. '<CR>', {noremap = true})
+-- rust specifc keymaps
+vim.api.nvim_create_autocmd('Filetype', {
+  pattern = 'rust',
+  callback = function()
+    -- save, compile, and run
+    vim.api.nvim_set_keymap('n', '<F5>', '<CMD>w!<CR><CMD>!cat input && echo "----" && cargo run < input<CR>', {noremap = true})
+  end,
+})
+
+-- kotlin specific keymaps
+vim.api.nvim_create_autocmd('Filetype', {
+  pattern = 'kotlin',
+  callback = function()
+    -- save, compile, and run
+    vim.api.nvim_set_keymap('n', '<F5>', '<CMD>w!<CR><CMD>!cat input && echo "----" && kotlinc %:r.kt -include-runtime -d %:r.jar && java -jar %:r.jar < input<CR>', {noremap = true})
+  end,
+})
 
 -- auto commands
 vim.api.nvim_create_autocmd('BufNewFile', {pattern = '*.cpp', command = '-r template.cpp'}) -- new cpp files default to template
 vim.api.nvim_create_autocmd('BufWritePre', {pattern = '*.cpp,*.hpp', command = 'silent! execute \'%s/\\s\\+$//ge\''}) -- remove trailing white space during writes
 
 -- package management
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
   vim.fn.system({
     'git',
@@ -122,16 +148,16 @@ rt.setup({
   server = {
     on_attach = function(_, bufnr)
       -- hover actions
-      vim.keymap.set("n", "<C-space>", rt.hover_actions.hover_actions, { buffer = bufnr })
+      vim.keymap.set('n', '<C-space>', rt.hover_actions.hover_actions, { buffer = bufnr })
       -- code action groups
-      vim.keymap.set("n", "<Leader>a", rt.code_action_group.code_action_group, { buffer = bufnr })
+      vim.keymap.set('n', '<Leader>a', rt.code_action_group.code_action_group, { buffer = bufnr })
     end,
   },
 })
 
-local format_sync_grp = vim.api.nvim_create_augroup("Format", {})
-vim.api.nvim_create_autocmd("BufWritePre", {
-  pattern = "*.rs",
+local format_sync_grp = vim.api.nvim_create_augroup('Format', {})
+vim.api.nvim_create_autocmd('BufWritePre', {
+  pattern = '*.rs',
   callback = function()
     vim.lsp.buf.format({ timeout_ms = 200 })
   end,
