@@ -90,9 +90,10 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   -- lsp
   'neovim/nvim-lspconfig',
+  'rhysd/vim-clang-format',
   'simrat39/rust-tools.nvim',
   'rust-lang/rust.vim',
-  'rhysd/vim-clang-format',
+  'udalov/kotlin-vim',
 
   -- mason
   'williamboman/mason.nvim',
@@ -103,7 +104,7 @@ require('lazy').setup({
 
 -- LSP
 local lspconfig = require('lspconfig')
-lspconfig.clangd.setup{} -- CPP
+lspconfig.clangd.setup{} -- c++
 lspconfig.rust_analyzer.setup {
   -- server-specific settings. See `:help lspconfig-setup`
   settings = {
@@ -114,6 +115,7 @@ lspconfig.rust_analyzer.setup {
     },
   },
 } -- rust
+lspconfig.kotlin_language_server.setup{} -- kotlin
 
 local rt = require('rust-tools')
 rt.setup({
