@@ -96,8 +96,9 @@ vim.api.nvim_create_autocmd('Filetype', {
 })
 
 -- auto commands
-vim.api.nvim_create_autocmd('BufNewFile', {pattern = '*.cpp', command = '-r template.cpp'}) -- new cpp files default to template
-vim.api.nvim_create_autocmd('BufWritePre', {pattern = '*.cpp,*.hpp', command = 'silent! execute \'%s/\\s\\+$//ge\''}) -- remove trailing white space during writes
+vim.api.nvim_create_autocmd('BufNewFile', {pattern = '*.cpp', command = '-r template.cpp'}) -- new c++ files default to template
+vim.api.nvim_create_autocmd('BufNewFile', {pattern = '*.kt', command = '-r template.kt'}) -- new kotlin files default to template
+vim.api.nvim_create_autocmd('BufWritePre', {pattern = '*.cpp,*.hpp,*.rs,*.kt', command = 'silent! execute \'%s/\\s\\+$//ge\''}) -- remove trailing white space during writes
 
 -- package management
 local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
