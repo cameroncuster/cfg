@@ -91,7 +91,7 @@ vim.api.nvim_create_autocmd('Filetype', {
   pattern = 'kotlin',
   callback = function()
     -- save, compile, and run
-    vim.api.nvim_set_keymap('n', '<F5>', '<CMD>w!<CR><CMD>!cat input && echo "----" && kotlinc %:r.kt -include-runtime -d %:r.jar && java -jar %:r.jar < input<CR>', {noremap = true})
+    vim.api.nvim_set_keymap('n', '<F5>', '<CMD>w!<CR><CMD>!cat input && echo "----" && kotlinc %:r.kt -jvm-target 1.8 -include-runtime -d %:r.jar && java -jar %:r.jar < input<CR>', {noremap = true})
   end,
 })
 
