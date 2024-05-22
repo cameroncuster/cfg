@@ -118,8 +118,8 @@ require('lazy').setup({
   -- lsp
   'neovim/nvim-lspconfig',
   'rhysd/vim-clang-format',
-  'simrat39/rust-tools.nvim',
   'rust-lang/rust.vim',
+  'simrat39/rust-tools.nvim',
   'udalov/kotlin-vim',
 
   -- mason
