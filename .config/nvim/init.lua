@@ -86,6 +86,15 @@ vim.api.nvim_create_autocmd('Filetype', {
   end,
 })
 
+-- python specifc keymaps
+vim.api.nvim_create_autocmd('Filetype', {
+  pattern = 'python',
+  callback = function()
+    -- save, compile, and run
+    vim.api.nvim_set_keymap('n', '<F5>', '<CMD>w!<CR><CMD>!cat input && echo "----" && pypy3 %:r.py < input<CR>', {noremap = true})
+  end,
+})
+
 -- kotlin specific keymaps
 vim.api.nvim_create_autocmd('Filetype', {
   pattern = 'kotlin',
@@ -120,6 +129,7 @@ require('lazy').setup({
   'rhysd/vim-clang-format',
   'rust-lang/rust.vim',
   'simrat39/rust-tools.nvim',
+  'microsoft/pyright',
   'udalov/kotlin-vim',
 
   -- mason
@@ -142,6 +152,7 @@ lspconfig.rust_analyzer.setup {
     },
   },
 } -- rust
+lspconfig.pyright.setup{} -- python
 lspconfig.kotlin_language_server.setup{} -- kotlin
 
 local rt = require('rust-tools')
