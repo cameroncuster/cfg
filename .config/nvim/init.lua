@@ -38,8 +38,7 @@ vim.api.nvim_create_autocmd('Filetype', {
   callback = function()
     -- compile and run
     exec = 'cat input && echo "----" && ./%:r.out < input'
-    compile_flags =
-    .. ' -I.'
+    compile_flags = ' -I.'
     .. ' -g'
     .. ' -Wall'
     .. ' -Wextra'
