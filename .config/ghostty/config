@@ -1,0 +1,98 @@
+# ╔══════════════════════════════════════════════════════════════╗
+# ║  GHOSTTY CONFIG — "PHANTOM PROTOCOL"                       ║
+# ║  A hacker aesthetic for those who live in the terminal.     ║
+# ╚══════════════════════════════════════════════════════════════╝
+
+# ─── FONT ────────────────────────────────────────────────────
+font-family = JetBrains Mono
+font-size = 13
+font-thicken = true
+adjust-cell-height = 5
+
+# ─── CURSOR ──────────────────────────────────────────────────
+cursor-style = block
+cursor-style-blink = true
+cursor-color = 00ff41
+cursor-text = 0a0a0a
+
+# ─── MOUSE ───────────────────────────────────────────────────
+mouse-hide-while-typing = true
+
+# ─── WINDOW ──────────────────────────────────────────────────
+window-padding-x = 12
+window-padding-y = 8
+window-decoration = false
+window-title-font-family = JetBrains Mono
+background-opacity = 0.88
+unfocused-split-opacity = 0.7
+
+# ─── COLOR PALETTE — "PHANTOM GREEN" ────────────────────────
+#   A phosphor-burn green palette on deep black.
+#   Inspired by old CRTs, ciphertext, and late nights.
+
+background = 0a0a0a
+foreground = 00ff41
+
+# Normal colors
+palette = 0=#0a0a0a
+palette = 1=#ff0033
+palette = 2=#00ff41
+palette = 3=#ffb800
+palette = 4=#00bfff
+palette = 5=#bf00ff
+palette = 6=#00ffcc
+palette = 7=#b0b0b0
+
+# Bright colors
+palette = 8=#1a1a1a
+palette = 9=#ff3366
+palette = 10=#39ff14
+palette = 11=#ffdd33
+palette = 12=#33ccff
+palette = 13=#d94dff
+palette = 14=#33ffd6
+palette = 15=#e0e0e0
+
+# Selection
+selection-foreground = 0a0a0a
+selection-background = 00ff41
+
+# ─── SHELL INTEGRATION ──────────────────────────────────────
+shell-integration = detect
+shell-integration-features = cursor,sudo,title
+
+# ─── CLIPBOARD ───────────────────────────────────────────────
+copy-on-select = clipboard
+clipboard-read = allow
+clipboard-write = allow
+clipboard-paste-protection = true
+
+# ─── SCROLLBACK ──────────────────────────────────────────────
+scrollback-limit = 100000
+
+# ─── KEYBINDS ────────────────────────────────────────────────
+#   Splits & navigation for the power user.
+
+keybind = ctrl+shift+t=new_tab
+keybind = ctrl+shift+enter=new_split:right
+keybind = ctrl+shift+minus=new_split:down
+keybind = ctrl+shift+h=goto_split:left
+keybind = ctrl+shift+l=goto_split:right
+keybind = ctrl+shift+k=goto_split:top
+keybind = ctrl+shift+j=goto_split:bottom
+keybind = ctrl+shift+z=toggle_split_zoom
+keybind = ctrl+equal=increase_font_size:1
+keybind = ctrl+minus=decrease_font_size:1
+keybind = ctrl+0=reset_font_size
+keybind = ctrl+shift+f=toggle_fullscreen
+
+# Quick tab switching
+keybind = alt+1=goto_tab:1
+keybind = alt+2=goto_tab:2
+keybind = alt+3=goto_tab:3
+keybind = alt+4=goto_tab:4
+keybind = alt+5=goto_tab:5
+
+# ─── PERFORMANCE ─────────────────────────────────────────────
+bold-is-bright = true
+
