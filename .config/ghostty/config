@@ -10,25 +10,18 @@ font-thicken = true
 adjust-cell-height = 5
 
 # ─── CURSOR ──────────────────────────────────────────────────
-cursor-style = block
-cursor-style-blink = true
 cursor-color = 00ff41
 cursor-text = 0a0a0a
 
-# ─── MOUSE ───────────────────────────────────────────────────
-mouse-hide-while-typing = true
-
 # ─── WINDOW ──────────────────────────────────────────────────
-window-padding-x = 12
-window-padding-y = 8
-window-decoration = false
 background-opacity = 0.88
+background-blur-radius = 20
 unfocused-split-opacity = 0.7
+confirm-close-surface = false
+window-save-state = always
+title = "> phantom_protocol"
 
 # ─── COLOR PALETTE — "PHANTOM GREEN" ────────────────────────
-#   A phosphor-burn green palette on deep black.
-#   Inspired by old CRTs, ciphertext, and late nights.
-
 background = 0a0a0a
 foreground = 00ff41
 
@@ -56,33 +49,21 @@ palette = 15=#e0e0e0
 selection-foreground = 0a0a0a
 selection-background = 00ff41
 
-# ─── SHELL INTEGRATION ──────────────────────────────────────
-shell-integration = detect
-shell-integration-features = cursor,sudo,title
-
 # ─── CLIPBOARD ───────────────────────────────────────────────
 copy-on-select = clipboard
-clipboard-read = allow
-clipboard-write = allow
-clipboard-paste-protection = true
 
-# ─── SCROLLBACK ──────────────────────────────────────────────
-scrollback-limit = 100000
+# ─── MACOS ───────────────────────────────────────────────────
+macos-option-as-alt = true
 
 # ─── KEYBINDS ────────────────────────────────────────────────
-# Ghostty's macOS defaults handle splits, tabs, font size, and
-# fullscreen out of the box. Add custom keybinds below if needed.
-#
 # Quick reference (defaults):
-#   cmd+d          → split right
-#   cmd+shift+d    → split down
-#   cmd+opt+arrows → navigate splits
-#   cmd+shift+enter→ zoom split
-#   cmd+t          → new tab
-#   cmd+1-9        → switch tabs
-#   cmd+enter      → fullscreen
-#   cmd+f          → search
-#   cmd+=/-/0      → font size
+#   cmd+d / cmd+shift+d  → split right / down
+#   cmd+opt+arrows       → navigate splits
+#   cmd+shift+enter      → zoom split
+#   cmd+t / cmd+1-9      → new tab / switch tabs
+#   cmd+enter            → fullscreen
+#   cmd+f                → search
+#   cmd+=/-/0            → font size
 
 # Vim-style split navigation
 keybind = ctrl+shift+h=goto_split:left
@@ -90,13 +71,13 @@ keybind = ctrl+shift+j=goto_split:bottom
 keybind = ctrl+shift+k=goto_split:top
 keybind = ctrl+shift+l=goto_split:right
 
-# Vim-style scrollback (ctrl+u/d, gg/G)
+# Vim-style scrollback
 keybind = ctrl+shift+u=scroll_page_up
 keybind = ctrl+shift+d=scroll_page_down
 keybind = ctrl+shift+g=scroll_to_top
 keybind = ctrl+shift+e=scroll_to_bottom
 
-# Vim-style prompt jumping (like }/{)
+# Vim-style prompt jumping
 keybind = ctrl+shift+n=jump_to_prompt:1
 keybind = ctrl+shift+p=jump_to_prompt:-1
 
