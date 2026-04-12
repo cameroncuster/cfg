@@ -1,0 +1,80 @@
+[user]
+	email = custer.cameron@gmail.com
+	name = Cameron Custer
+
+[credential "https://github.com"]
+	helper = 
+	helper = !/opt/homebrew/bin/gh auth git-credential
+
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/opt/homebrew/bin/gh auth git-credential
+
+[init]
+	defaultBranch = main
+
+# ── Core ────────────────────────────────────────────────────────
+[core]
+	pager = delta
+	excludesfile = ~/.gitignore
+
+# ── Delta (pretty diffs) ───────────────────────────────────────
+[interactive]
+	diffFilter = delta --color-only
+
+[delta]
+	side-by-side = true
+	line-numbers = true
+	syntax-theme = Coldark-Dark
+
+# ── Diff ────────────────────────────────────────────────────────
+[diff]
+	algorithm = histogram
+	colorMoved = plain
+	renames = true
+
+# ── Push ────────────────────────────────────────────────────────
+[push]
+	autoSetupRemote = true
+	followTags = true
+
+# ── Pull ────────────────────────────────────────────────────────
+[pull]
+	rebase = true
+
+# ── Fetch ───────────────────────────────────────────────────────
+[fetch]
+	prune = true
+	pruneTags = true
+
+# ── Branch ──────────────────────────────────────────────────────
+[branch]
+	sort = -committerdate
+
+# ── Merge ───────────────────────────────────────────────────────
+[merge]
+	conflictstyle = zdiff3
+
+# ── Rebase ──────────────────────────────────────────────────────
+[rebase]
+	autoSquash = true
+	updateRefs = true
+
+# ── Rerere (remember conflict resolutions) ─────────────────────
+[rerere]
+	enabled = true
+	autoupdate = true
+
+# ── Commit ──────────────────────────────────────────────────────
+[commit]
+	verbose = true
+
+# ── Help ────────────────────────────────────────────────────────
+[help]
+	autocorrect = prompt
+
+# ── Aliases ─────────────────────────────────────────────────────
+[alias]
+	dft = -c diff.external=difft diff
+	dlog = -c diff.external=difft log --ext-diff
+	dshow = -c diff.external=difft show --ext-diff
