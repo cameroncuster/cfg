@@ -40,6 +40,14 @@ vim.api.nvim_create_autocmd('BufReadPost', {
 vim.g.c_no_curly_error = true -- disable curly brace error: thing[{i, j}]
 vim.g.augment_workspace_folders = {'~/augment', '~/gitgud'}
 
+-- filetypes
+vim.filetype.add({
+  extension = {
+    jsonnet = 'jsonnet',
+    libsonnet = 'jsonnet',
+  },
+})
+
 -- key maps
 vim.keymap.set('i', 'kj', '<ESC>', { desc = 'the OG keymap!' })
 vim.keymap.set('c', 'W', 'w')
@@ -123,7 +131,7 @@ vim.api.nvim_create_autocmd('Filetype', {
 -- auto commands
 vim.api.nvim_create_autocmd('BufNewFile', {pattern = '*.cpp', command = '-r template.cpp'}) -- new c++ files default to template
 vim.api.nvim_create_autocmd('BufNewFile', {pattern = '*.kt', command = '-r template.kt'}) -- new kotlin files default to template
-vim.api.nvim_create_autocmd('BufWritePre', {pattern = '*.cpp,*.hpp,*.rs,*.kt', command = 'silent! execute \'%s/\\s\\+$//ge\''}) -- remove trailing white space during writes
+vim.api.nvim_create_autocmd('BufWritePre', {pattern = '*.cpp,*.hpp,*.rs,*.kt,*.jsonnet,*.libsonnet', command = 'silent! execute \'%s/\\s\\+$//ge\''}) -- remove trailing white space during writes
 
 -- package management
 local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
@@ -223,9 +231,21 @@ vim.lsp.config('clangd', { capabilities = capabilities })
 vim.lsp.config('pyright', { capabilities = capabilities })
 vim.lsp.config('kotlin_language_server', { capabilities = capabilities })
 vim.lsp.config('gopls', { capabilities = capabilities })
+vim.lsp.config('jsonnet_ls', {
+  cmd = { 'jsonnet-language-server' },
+  filetypes = { 'jsonnet' },
+  root_markers = { { 'jsonnetfile.json', 'jsonnetfile.lock.json' }, '.git' },
+  capabilities = capabilities,
+})
+vim.lsp.config('svelte', {
+  cmd = { 'svelteserver', '--stdio' },
+  filetypes = { 'svelte' },
+  root_markers = { 'package.json', '.git' },
+  capabilities = capabilities,
+})
 
 -- rustaceanvim manages rust-analyzer — don't add it to vim.lsp.enable
-vim.lsp.enable({ 'clangd', 'pyright', 'kotlin_language_server', 'gopls' })
+vim.lsp.enable({ 'clangd', 'pyright', 'kotlin_language_server', 'gopls', 'jsonnet_ls', 'svelte' })
 vim.g.rustaceanvim = {
   server = {
     capabilities = capabilities,
@@ -253,6 +273,14 @@ require('mason').setup()
 
 -- gitsigns
 require('gitsigns').setup({
+  current_line_blame = true,
+  current_line_blame_opts = {
+    virt_text = true,
+    virt_text_pos = 'eol',
+    delay = 300,
+    ignore_whitespace = false,
+  },
+  current_line_blame_formatter = '  <author>, <author_time:%Y-%m-%d> - <summary>',
   on_attach = function(bufnr)
     local gs = package.loaded.gitsigns
     local opts = function(desc) return { buffer = bufnr, noremap = true, desc = desc } end
@@ -272,6 +300,14 @@ require('gitsigns').setup({
 })
 
 -- diffview setup
+--
+-- Workaround: select_entry() should focus the diff pane after opening a file,
+-- but focus stays in the file panel instead. The root cause is unclear — the
+-- diffview source does call nvim_set_current_win() to focus the diff pane,
+-- but something in the async flow (coroutine yield/resume) causes focus to
+-- end up back in the file panel. vim.schedule runs our wincmd l on the next
+-- event loop tick, after everything has settled, so it gets the last word on
+-- where focus lands.
 local diffview_actions = require('diffview.actions')
 require('diffview').setup({
   file_panel = {
@@ -316,6 +352,16 @@ vim.keymap.set('n', '<leader>fr', telescope_builtin.oldfiles, { desc = 'Recent f
 vim.keymap.set('n', '<leader>fc', telescope_builtin.git_commits, { desc = 'Git commits' })
 vim.keymap.set('n', '<leader>fs', telescope_builtin.git_status, { desc = 'Git status' })
 vim.keymap.set('n', '<leader>fB', telescope_builtin.git_branches, { desc = 'Git branches' })
+vim.keymap.set('n', '<leader>fw', function()
+  telescope_builtin.live_grep({ default_text = vim.fn.expand('<cword>') })
+end, { desc = 'Live grep word under cursor' })
+vim.keymap.set('x', '<leader>fw', function()
+  local saved, saved_type = vim.fn.getreg('v'), vim.fn.getregtype('v')
+  vim.cmd('noautocmd silent normal! "vy')
+  local sel = vim.fn.getreg('v'):gsub('\n', ' ')
+  vim.fn.setreg('v', saved, saved_type)
+  telescope_builtin.live_grep({ default_text = sel })
+end, { desc = 'Live grep visual selection' })
 
 -- nvim-tree
 require('nvim-tree').setup()
