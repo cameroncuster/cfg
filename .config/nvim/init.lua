@@ -172,6 +172,9 @@ require('lazy').setup({
   -- git
   'tpope/vim-fugitive',
 
+  -- seamless vim/tmux pane navigation (C-h/j/k/l)
+  'christoomey/vim-tmux-navigator',
+
   -- telescope (fuzzy finder)
   { 'nvim-telescope/telescope.nvim', dependencies = {
     'nvim-lua/plenary.nvim',
