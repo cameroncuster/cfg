@@ -367,7 +367,12 @@ vim.keymap.set('x', '<leader>fw', function()
 end, { desc = 'Live grep visual selection' })
 
 -- nvim-tree
-require('nvim-tree').setup()
+require('nvim-tree').setup({
+  update_focused_file = {
+    enable = true,
+    update_root = false,
+  },
+})
 vim.keymap.set('n', '<leader>e', '<CMD>NvimTreeToggle<CR>', { desc = 'Toggle file explorer' })
 
 -- treesitter (built-in in nvim 0.11+, plugin manages parser installs)
