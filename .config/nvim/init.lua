@@ -215,10 +215,6 @@ require('lazy').setup({
   -- obsidian (note-taking in markdown vaults)
   { 'obsidian-nvim/obsidian.nvim', version = '*' },
 
-  -- markdown renderer (in-buffer; do not lazy-load, it self-manages loading)
-  -- NOTE: disabled while using render-markdown (only one renderer at a time)
-  -- { 'OXY2DEV/markview.nvim', lazy = false },
-
   -- markdown renderer (active)
   'MeanderingProgrammer/render-markdown.nvim',
 
@@ -471,22 +467,6 @@ require('obsidian').setup({
   -- UI layer to avoid the two fighting over the same elements.
   ui = { enable = false },
 })
-
--- markview (full in-buffer markdown rendering) -- disabled while using render-markdown
--- Tuned to minimize the "text jumps while navigating" gripe:
---   * hybrid_modes only reveals raw markup under the cursor in normal mode
---   * linewise_hybrid_mode reveals just the CURRENT LINE's raw text instead of
---     expanding the whole node (table/list/code block), which is the main cause
---     of the layout jumping around
---   * edit_range = { 0, 0 } limits the reveal to the exact cursor line
--- require('markview').setup({
---   preview = {
---     modes = { 'n', 'no', 'c' },
---     hybrid_modes = { 'n' },
---     linewise_hybrid_mode = true,
---     edit_range = { 0, 0 },
---   },
--- })
 
 -- render-markdown (full in-buffer markdown rendering)
 -- latex math is rendered to Unicode via the `latex2text` CLI (pylatexenc);
