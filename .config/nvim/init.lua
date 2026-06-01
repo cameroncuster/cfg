@@ -27,6 +27,7 @@ vim.opt.ls = 2 -- always show statusline
 vim.opt.termguicolors = true
 vim.opt.wrap = true -- wrap lines
 vim.opt.linebreak = true -- wrap at word boundaries, not mid-word
+vim.opt.conceallevel = 2 -- conceal markup (e.g. obsidian.nvim links/formatting)
 
 -- remember cursor position when reopening files
 vim.api.nvim_create_autocmd('BufReadPost', {
@@ -210,6 +211,19 @@ require('lazy').setup({
 
   -- commenting (gcc for line, gc for selection)
   'numToStr/Comment.nvim',
+
+  -- obsidian (note-taking in markdown vaults)
+  { 'obsidian-nvim/obsidian.nvim', version = '*' },
+
+  -- markdown renderer (in-buffer; do not lazy-load, it self-manages loading)
+  -- NOTE: disabled while using render-markdown (only one renderer at a time)
+  -- { 'OXY2DEV/markview.nvim', lazy = false },
+
+  -- markdown renderer (active)
+  'MeanderingProgrammer/render-markdown.nvim',
+
+  -- on-demand accurate LaTeX math preview (popup; pairs with the renderer)
+  'jbyuki/nabla.nvim',
 
   -- colorscheme
   { 'EdenEast/nightfox.nvim', lazy = false, priority = 1000 },
@@ -442,3 +456,47 @@ require('nvim-surround').setup()
 
 -- commenting
 require('Comment').setup()
+
+-- obsidian
+-- NOTE: point `path` at your Obsidian vault (the folder containing your notes)
+require('obsidian').setup({
+  legacy_commands = false,
+  workspaces = {
+    {
+      name = 'notes',
+      path = '~/notes',
+    },
+  },
+  -- the markdown renderer handles in-buffer rendering, so disable obsidian's own
+  -- UI layer to avoid the two fighting over the same elements.
+  ui = { enable = false },
+})
+
+-- markview (full in-buffer markdown rendering) -- disabled while using render-markdown
+-- Tuned to minimize the "text jumps while navigating" gripe:
+--   * hybrid_modes only reveals raw markup under the cursor in normal mode
+--   * linewise_hybrid_mode reveals just the CURRENT LINE's raw text instead of
+--     expanding the whole node (table/list/code block), which is the main cause
+--     of the layout jumping around
+--   * edit_range = { 0, 0 } limits the reveal to the exact cursor line
+-- require('markview').setup({
+--   preview = {
+--     modes = { 'n', 'no', 'c' },
+--     hybrid_modes = { 'n' },
+--     linewise_hybrid_mode = true,
+--     edit_range = { 0, 0 },
+--   },
+-- })
+
+-- render-markdown (full in-buffer markdown rendering)
+-- latex math is rendered to Unicode via the `latex2text` CLI (pylatexenc);
+-- requires the `latex` treesitter parser + latex2text on PATH.
+require('render-markdown').setup({
+  preset = 'obsidian',
+  latex = { enabled = true },
+})
+
+-- nabla: on-demand accurate math preview of the equation under the cursor.
+-- render-markdown's latex is a Unicode approximation; nabla gives a faithful
+-- ASCII-art popup for matrices/aligns/etc. with zero background cost.
+vim.keymap.set('n', '<leader>p', function() require('nabla').popup() end, { desc = 'Math: nabla popup' })

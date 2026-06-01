@@ -7,3 +7,6 @@ for f in "$HOME"/.config/zsh/[0-9]*.zsh; do
 done
 
 [[ -f "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
+
+# Created by `pipx` on 2026-05-31 23:49:03
+export PATH="$PATH:/Users/ccuster/.local/bin"
