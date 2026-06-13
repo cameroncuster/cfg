@@ -382,8 +382,47 @@ require('nvim-tree').setup({
     enable = true,
     update_root = false,
   },
+  -- route icons through NvimTree highlight groups so they pick up the theme below
+  renderer = {
+    icons = {
+      web_devicons = {
+        file = { enable = true, color = false },
+        folder = { enable = true, color = false },
+      },
+    },
+  },
 })
 vim.keymap.set('n', '<leader>e', '<CMD>NvimTreeToggle<CR>', { desc = 'Toggle file explorer' })
+
+-- hacker (matrix-green) theme, scoped to NvimTree* groups only
+local function nvim_tree_hacker_theme()
+  local green, dim, bright = '#00ff5f', '#00a843', '#5fff87'
+  local hl = {
+    NvimTreeNormal = { fg = green, bg = 'NONE' },
+    NvimTreeNormalNC = { fg = green, bg = 'NONE' },
+    NvimTreeEndOfBuffer = { fg = 'NONE', bg = 'NONE' },
+    NvimTreeWinSeparator = { fg = dim, bg = 'NONE' },
+    NvimTreeRootFolder = { fg = bright, bold = true },
+    NvimTreeFolderName = { fg = green },
+    NvimTreeOpenedFolderName = { fg = bright, bold = true },
+    NvimTreeEmptyFolderName = { fg = dim },
+    NvimTreeFolderIcon = { fg = green },
+    NvimTreeFileIcon = { fg = dim },
+    NvimTreeOpenedFile = { fg = bright, bold = true },
+    NvimTreeSymlink = { fg = bright },
+    NvimTreeIndentMarker = { fg = dim },
+    NvimTreeGitDirty = { fg = bright },
+    NvimTreeGitNew = { fg = '#87ff5f' },
+    NvimTreeGitStaged = { fg = green },
+    NvimTreeGitDeleted = { fg = '#ff5f5f' },
+    NvimTreeCursorLine = { bg = '#0a0f0a' },
+  }
+  for name, val in pairs(hl) do
+    vim.api.nvim_set_hl(0, name, val)
+  end
+end
+nvim_tree_hacker_theme()
+vim.api.nvim_create_autocmd('ColorScheme', { callback = nvim_tree_hacker_theme })
 
 -- treesitter (built-in in nvim 0.11+, plugin manages parser installs)
 vim.api.nvim_create_autocmd('FileType', {
