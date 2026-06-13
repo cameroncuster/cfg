@@ -1,3 +1,7 @@
+# ── Editor ──────────────────────────────────────────────────────
+export VISUAL=nvim
+export EDITOR="$VISUAL"
+
 # ── History ─────────────────────────────────────────────────────
 HISTFILE=~/.zsh_history
 HISTSIZE=10000

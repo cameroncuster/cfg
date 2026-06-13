@@ -2,10 +2,6 @@
 export PATH=$HOME/.npm-global/bin:$HOME/.local/bin:$PATH
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
-# ── Editor ──────────────────────────────────────────────────────
-export VISUAL=vim
-export EDITOR="$VISUAL"
-
 # ── nvm ─────────────────────────────────────────────────────────
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
