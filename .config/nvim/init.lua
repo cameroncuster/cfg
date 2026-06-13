@@ -396,7 +396,8 @@ vim.keymap.set('n', '<leader>e', '<CMD>NvimTreeToggle<CR>', { desc = 'Toggle fil
 
 -- hacker (matrix-green) theme, scoped to NvimTree* groups only
 local function nvim_tree_hacker_theme()
-  local green, dim, bright = '#00ff5f', '#00a843', '#5fff87'
+  -- matches kitty "Phantom Green": #00ff41 (fg/color2), #39ff14 (color10), #0a0a0a (bg)
+  local green, dim, bright = '#00ff41', '#00a82b', '#39ff14'
   local hl = {
     NvimTreeNormal = { fg = green, bg = 'NONE' },
     NvimTreeNormalNC = { fg = green, bg = 'NONE' },
@@ -412,10 +413,10 @@ local function nvim_tree_hacker_theme()
     NvimTreeSymlink = { fg = bright },
     NvimTreeIndentMarker = { fg = dim },
     NvimTreeGitDirty = { fg = bright },
-    NvimTreeGitNew = { fg = '#87ff5f' },
+    NvimTreeGitNew = { fg = '#39ff14' },
     NvimTreeGitStaged = { fg = green },
-    NvimTreeGitDeleted = { fg = '#ff5f5f' },
-    NvimTreeCursorLine = { bg = '#0a0f0a' },
+    NvimTreeGitDeleted = { fg = '#ff0033' },
+    NvimTreeCursorLine = { bg = '#0a0a0a' },
   }
   for name, val in pairs(hl) do
     vim.api.nvim_set_hl(0, name, val)
