@@ -132,7 +132,7 @@ vim.api.nvim_create_autocmd('Filetype', {
 -- auto commands
 vim.api.nvim_create_autocmd('BufNewFile', {pattern = '*.cpp', command = '-r template.cpp'}) -- new c++ files default to template
 vim.api.nvim_create_autocmd('BufNewFile', {pattern = '*.kt', command = '-r template.kt'}) -- new kotlin files default to template
-vim.api.nvim_create_autocmd('BufWritePre', {pattern = '*.cpp,*.hpp,*.rs,*.kt,*.jsonnet,*.libsonnet', command = 'silent! execute \'%s/\\s\\+$//ge\''}) -- remove trailing white space during writes
+vim.api.nvim_create_autocmd('BufWritePre', {pattern = '*.hpp,*.kt,*.jsonnet,*.libsonnet', command = 'silent! execute \'%s/\\s\\+$//ge\''}) -- remove trailing white space during writes (cpp/rs handled by LSP format)
 
 -- package management
 local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
@@ -150,7 +150,6 @@ vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup({
   -- lsp
-  'rhysd/vim-clang-format',
   'rust-lang/rust.vim',
   { 'mrcjkb/rustaceanvim', lazy = false },
   'udalov/kotlin-vim',
@@ -240,7 +239,12 @@ vim.cmd.colorscheme('nightfox')
 -- LSP (vim.lsp.config for nvim 0.11+)
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-vim.lsp.config('clangd', { capabilities = capabilities })
+-- query-driver lets clangd extract system includes from Homebrew GCC, so
+-- libstdc++-only headers like <bits/stdc++.h> resolve in the editor
+vim.lsp.config('clangd', {
+  cmd = { 'clangd', '--query-driver=/opt/homebrew/bin/g++*,/opt/homebrew/Cellar/gcc/**' },
+  capabilities = capabilities,
+})
 vim.lsp.config('pyright', { capabilities = capabilities })
 vim.lsp.config('kotlin_language_server', { capabilities = capabilities })
 vim.lsp.config('gopls', { capabilities = capabilities })
@@ -270,16 +274,14 @@ vim.g.rustaceanvim = {
   },
 }
 
+-- autoformat on save via LSP (minimal-diff edits; clangd for cpp, rust-analyzer for rust)
 local format_sync_grp = vim.api.nvim_create_augroup('Format', {})
 vim.api.nvim_create_autocmd('BufWritePre', {
-  pattern = '*.rs',
-  callback = function() vim.lsp.buf.format({ timeout_ms = 200 })
+  pattern = { '*.rs', '*.cpp' },
+  callback = function() vim.lsp.buf.format({ timeout_ms = 1000 })
   end,
   group = format_sync_grp,
 })
-
--- autoformat on save
-vim.cmd('autocmd FileType cpp ClangFormatAutoEnable')
 
 -- mason Setup
 require('mason').setup()
