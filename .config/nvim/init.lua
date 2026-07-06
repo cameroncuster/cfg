@@ -75,7 +75,7 @@ vim.api.nvim_create_autocmd('Filetype', {
     .. ' -Wcast-align'
     .. ' -Wshift-overflow=2'
     .. ' -Wduplicated-cond'
-    .. ' -std=c++20'
+    .. ' -std=c++26'
     .. ' -fstack-protector'
     --.. ' -fsanitize=address,undefined' does not play nice with GDB
     .. ' -D_GLIBCXX_DEBUG'
@@ -85,10 +85,10 @@ vim.api.nvim_create_autocmd('Filetype', {
     .. ' -D_FORTIFY_SOURCE=2'
 
     -- save, compile, and quick run
-    vim.api.nvim_set_keymap('n', '<F4>', '<CMD>w!<CR><CMD>!g++ -I. -std=c++20 -Wall -O2 %:r.cpp -o %:r.out && ' .. exec .. '<CR>', {noremap = true})
+    vim.api.nvim_set_keymap('n', '<F4>', '<CMD>w!<CR><CMD>!g++ -I. -std=c++26 -Wall -O2 %:r.cpp -o %:r.out && ' .. exec .. '<CR>', {noremap = true})
 
     -- save, quick compile, and run
-    vim.api.nvim_set_keymap('n', '<F5>', '<CMD>w!<CR><CMD>!g++ -I. -std=c++20 -Wall %:r.cpp -o %:r.out && ' .. exec .. '<CR>', {noremap = true})
+    vim.api.nvim_set_keymap('n', '<F5>', '<CMD>w!<CR><CMD>!g++ -I. -std=c++26 -Wall %:r.cpp -o %:r.out && ' .. exec .. '<CR>', {noremap = true})
 
     -- save, debug compile, and run
     vim.api.nvim_set_keymap('n', '<F6>', '<CMD>w!<CR><CMD>!g++ ' .. compile_flags .. ' %:r.cpp -o %:r.out && ' .. exec .. '<CR>', {noremap = true})
