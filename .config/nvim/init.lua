@@ -243,11 +243,21 @@ local capabilities = require('cmp_nvim_lsp').default_capabilities()
 -- libstdc++-only headers like <bits/stdc++.h> resolve in the editor
 vim.lsp.config('clangd', {
   cmd = { 'clangd', '--query-driver=/opt/homebrew/bin/g++*,/opt/homebrew/Cellar/gcc/**' },
+  filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'cuda', 'proto' },
   capabilities = capabilities,
 })
-vim.lsp.config('pyright', { capabilities = capabilities })
-vim.lsp.config('kotlin_language_server', { capabilities = capabilities })
-vim.lsp.config('gopls', { capabilities = capabilities })
+vim.lsp.config('pyright', {
+  filetypes = { 'python' },
+  capabilities = capabilities,
+})
+vim.lsp.config('kotlin_language_server', {
+  filetypes = { 'kotlin' },
+  capabilities = capabilities,
+})
+vim.lsp.config('gopls', {
+  filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
+  capabilities = capabilities,
+})
 vim.lsp.config('jsonnet_ls', {
   cmd = { 'jsonnet-language-server' },
   filetypes = { 'jsonnet' },
