@@ -43,6 +43,19 @@ vim.lsp.config('svelte', {
 
 -- rustaceanvim manages rust-analyzer — don't add it to vim.lsp.enable
 vim.lsp.enable({ 'clangd', 'pyright', 'kotlin_language_server', 'gopls', 'jsonnet_ls', 'svelte' })
+
+-- rustaceanvim hardcodes an INFO notification every time a standalone .rs
+-- file opens ("No project root found. Starting ... in detached/standalone
+-- mode"); there's no config option for it, so filter it out of vim.notify
+local notify = vim.notify
+---@diagnostic disable-next-line: duplicate-set-field
+vim.notify = function(msg, ...)
+  if type(msg) == 'string' and msg:find('detached/standalone mode', 1, true) then
+    return
+  end
+  return notify(msg, ...)
+end
+
 vim.g.rustaceanvim = {
   server = {
     capabilities = capabilities,

@@ -85,7 +85,8 @@ local function setup_rust()
     map('<F5>', '<CMD>w!<CR><CMD>!' .. run_input .. 'cargo run < input<CR>', 'CP: cargo run')
     -- debug builds already have overflow & bounds checks
     map('<F6>', '<CMD>w!<CR><CMD>!' .. run_input .. 'RUST_BACKTRACE=1 cargo run < input<CR>', 'CP: cargo run + backtrace')
-    map('<F7>', '<CMD>terminal cargo build && ' .. run_input .. 'rust-lldb -o \'settings set target.input-path input\' target/debug/' .. bin .. '<CR>', 'CP: rust-lldb')
+    -- --source-quietly hides the echo of the rust pretty-printer setup script
+    map('<F7>', '<CMD>terminal cargo build && ' .. run_input .. 'rust-lldb --source-quietly -o \'settings set target.input-path input\' target/debug/' .. bin .. '<CR>', 'CP: rust-lldb')
     map('<F10>', '<CMD>!' .. run_input .. './target/debug/' .. bin .. ' < input<CR>', 'CP: run')
   else
     -- single file: mirrors the c++ workflow
@@ -96,7 +97,7 @@ local function setup_rust()
     map('<F4>', compile_run('-O'), 'CP: compile (-O) + run')
     map('<F5>', compile_run(''), 'CP: compile + run')
     map('<F6>', compile_run('-g -C debug-assertions=on -C overflow-checks=on'), 'CP: debug compile + run')
-    map('<F7>', '<CMD>terminal ' .. run_input .. 'rust-lldb -o \'settings set target.input-path input\' %:r.out<CR>', 'CP: rust-lldb')
+    map('<F7>', '<CMD>terminal ' .. run_input .. 'rust-lldb --source-quietly -o \'settings set target.input-path input\' %:r.out<CR>', 'CP: rust-lldb')
     map('<F10>', '<CMD>!' .. exec .. '<CR>', 'CP: run')
   end
 end
