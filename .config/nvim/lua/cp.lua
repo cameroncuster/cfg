@@ -12,14 +12,17 @@ local M = {}
 -- ~/laboratory/make_pch.bash (which builds one precompiled header per set,
 -- cached in ~/.cache/cp-pch so any directory gets fast compiles)
 local pch_dir = os.getenv('HOME') .. '/.cache/cp-pch'
+-- -DLOCAL activates the debug() macro from ~/laboratory/debug.hpp; judges
+-- don't define it, so submissions compile the no-op branch
 M.cpp_flags = {
-  fast = '-I. -I' .. pch_dir .. ' -std=c++26 -Wall -O2',
-  quick = '-I. -I' .. pch_dir .. ' -std=c++26 -Wall',
+  fast = '-I. -I' .. pch_dir .. ' -DLOCAL -std=c++26 -Wall -O2',
+  quick = '-I. -I' .. pch_dir .. ' -DLOCAL -std=c++26 -Wall',
   debug = table.concat({
     -- language & includes
     '-std=c++26',
     '-I.',
     '-I' .. pch_dir,
+    '-DLOCAL',
     -- debug info
     '-g',
     '-gdwarf-4', -- lldb cannot read the DWARF 5 debug info GCC emits by default
