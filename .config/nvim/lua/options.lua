@@ -22,6 +22,7 @@ vim.opt.linebreak = true -- wrap at word boundaries, not mid-word
 vim.opt.conceallevel = 2 -- conceal markup (e.g. obsidian.nvim links/formatting)
 
 vim.g.c_no_curly_error = true -- disable curly brace error: thing[{i, j}]
+vim.g.rust_recommended_style = 0 -- don't force 4-space indent; rustfmt is configured for 2
 vim.g.augment_workspace_folders = {'~/augment', '~/gitgud'}
 
 -- filetypes
