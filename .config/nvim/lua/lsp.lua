@@ -63,13 +63,24 @@ vim.g.rustaceanvim = {
     status_notify_level = false,
     settings = function(project_root)
       -- cargo-based checks only work inside a cargo project; in single-file
-      -- (detached) mode they fail loudly, so disable them there
+      -- (detached) mode run clippy-driver instead, since rust-analyzer's
+      -- native diagnostics miss whole error classes (e.g. unresolved
+      -- methods). Full compiler errors + clippy lints, matching the in-cargo
+      -- experience; --emit=metadata type-checks without codegen, so it's fast
       local has_cargo = project_root and vim.uv.fs_stat(project_root .. '/Cargo.toml') ~= nil
+      local check = has_cargo and { command = 'clippy' } -- lint with clippy on save, like clangd's diagnostics
+        or {
+          overrideCommand = {
+            'clippy-driver',
+            '--edition',
+            '2024',
+            '--error-format=json',
+            '--emit=metadata=/dev/null',
+            '$saved_file',
+          },
+        }
       return {
-        ['rust-analyzer'] = {
-          checkOnSave = has_cargo,
-          check = { command = 'clippy' }, -- lint with clippy on save, like clangd's diagnostics
-        },
+        ['rust-analyzer'] = { check = check },
       }
     end,
   },

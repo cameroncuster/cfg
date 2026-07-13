@@ -90,9 +90,11 @@ local function setup_rust()
     map('<F10>', '<CMD>!' .. run_input .. './target/debug/' .. bin .. ' < input<CR>', 'CP: run')
   else
     -- single file: mirrors the c++ workflow
+    -- bare rustc defaults to edition 2015 and has no config file to change
+    -- that, so pass the edition explicitly (kept in sync with lsp.lua's check)
     local exec = run_input .. './%:r.out < input'
     local function compile_run(flags)
-      return '<CMD>w!<CR><CMD>!rustc ' .. flags .. ' %:r.rs -o %:r.out && ' .. exec .. '<CR>'
+      return '<CMD>w!<CR><CMD>!rustc --edition 2024 ' .. flags .. ' %:r.rs -o %:r.out && ' .. exec .. '<CR>'
     end
     map('<F4>', compile_run('-O'), 'CP: compile (-O) + run')
     map('<F5>', compile_run(''), 'CP: compile + run')
