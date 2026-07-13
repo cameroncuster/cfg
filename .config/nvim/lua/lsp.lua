@@ -10,7 +10,19 @@ vim.lsp.config('clangd', {
   capabilities = capabilities,
 })
 vim.lsp.config('pyright', {
+  cmd = { 'pyright-langserver', '--stdio' },
   filetypes = { 'python' },
+  -- fall back to the file's directory so standalone files still get diagnostics
+  root_dir = function(bufnr, on_dir)
+    local markers = { 'pyproject.toml', 'setup.py', 'requirements.txt', '.git' }
+    local path = vim.api.nvim_buf_get_name(bufnr)
+    on_dir(vim.fs.root(bufnr, markers) or vim.fs.dirname(path))
+  end,
+  settings = {
+    python = {
+      analysis = { typeCheckingMode = 'basic', diagnosticMode = 'openFilesOnly' },
+    },
+  },
   capabilities = capabilities,
 })
 vim.lsp.config('kotlin_language_server', {
