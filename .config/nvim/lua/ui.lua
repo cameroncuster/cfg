@@ -21,12 +21,23 @@ local themes = {
   macchiato = { colorscheme = 'catppuccin-macchiato', background = 'dark' },
   latte = { colorscheme = 'catppuccin-latte', background = 'light' },
   dayfox = { colorscheme = 'dayfox', background = 'light' },
+  kgb = { colorscheme = 'carbonfox', background = 'dark' },
+  cia = { colorscheme = 'tokyonight-day', background = 'light' },
+  nordfox = { colorscheme = 'nordfox', background = 'dark' },
+  terafox = { colorscheme = 'terafox', background = 'dark' },
+  duskfox = { colorscheme = 'duskfox', background = 'dark' },
+  dawnfox = { colorscheme = 'dawnfox', background = 'light' },
+  amber = { colorscheme = 'carbonfox', background = 'dark' },
 }
 local function apply_kitty_theme()
   local link = vim.uv.fs_readlink(vim.fn.expand('~/.config/kitty/theme.conf'))
   local name = link and link:match('theme%-(%w+)%.conf')
   local theme = themes[name] or themes.dark
-  if vim.g.colors_name ~= theme.colorscheme then
+  local prev = vim.g.kitty_theme
+  vim.g.kitty_theme = themes[name] and name or 'dark'
+  -- re-apply on kitty-theme change even if the colorscheme is shared
+  -- (e.g. light/cia) so the ColorScheme autocmd refreshes the accents
+  if vim.g.colors_name ~= theme.colorscheme or prev ~= vim.g.kitty_theme then
     vim.o.background = theme.background
     vim.cmd.colorscheme(theme.colorscheme)
   end
@@ -148,12 +159,20 @@ require('nvim-tree').setup({
 })
 vim.keymap.set('n', '<leader>e', '<CMD>NvimTreeToggle<CR>', { desc = 'Toggle file explorer' })
 
--- hacker (matrix-green) theme, scoped to NvimTree* groups only
--- dark mode only: in light mode tokyonight-day's own NvimTree groups apply
+-- hacker theme, scoped to NvimTree* groups only; matrix green for the
+-- phantom-green kitty theme, ice blue for kgb, nothing otherwise (the
+-- active colorscheme's own NvimTree groups apply)
+-- { fg, dim, bright, cursorline-bg (kitty background) }
+local hacker_accents = {
+  dark = { '#00ff41', '#00a82b', '#39ff14', '#0a0a0a' }, -- phantom green
+  kgb = { '#00b3ff', '#0072a8', '#33ccff', '#0a0e14' }, -- ice blue
+  cia = { '#0b3d66', '#5f7a91', '#0066cc', '#c3d4e3' }, -- navy ink
+  amber = { '#ffb000', '#b08d55', '#ffd280', '#0d0a04' }, -- vt220 phosphor
+}
 local function nvim_tree_hacker_theme()
-  if vim.o.background == 'light' then return end
-  -- matches kitty "Phantom Green": #00ff41 (fg/color2), #39ff14 (color10), #0a0a0a (bg)
-  local green, dim, bright = '#00ff41', '#00a82b', '#39ff14'
+  local accent = hacker_accents[vim.g.kitty_theme]
+  if not accent then return end
+  local green, dim, bright = accent[1], accent[2], accent[3]
   local hl = {
     NvimTreeNormal = { fg = green, bg = 'NONE' },
     NvimTreeNormalNC = { fg = green, bg = 'NONE' },
@@ -169,10 +188,10 @@ local function nvim_tree_hacker_theme()
     NvimTreeSymlink = { fg = bright },
     NvimTreeIndentMarker = { fg = dim },
     NvimTreeGitDirty = { fg = bright },
-    NvimTreeGitNew = { fg = '#39ff14' },
+    NvimTreeGitNew = { fg = bright },
     NvimTreeGitStaged = { fg = green },
     NvimTreeGitDeleted = { fg = '#ff0033' },
-    NvimTreeCursorLine = { bg = '#0a0a0a' },
+    NvimTreeCursorLine = { bg = accent[4] },
   }
   for name, val in pairs(hl) do
     vim.api.nvim_set_hl(0, name, val)

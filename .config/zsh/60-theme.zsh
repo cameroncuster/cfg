@@ -10,11 +10,12 @@
 theme() {
     local kdir="$HOME/.config/kitty" mode="$1"
     case "$mode" in
-        "")  # no arg: toggle between the dark/light defaults
-            if [[ "$(readlink "$kdir/theme.conf")" == *-dark.conf ]]; then
-                mode=light
-            else
+        "")  # no arg: toggle to the default of the other mode
+            # light themes have a light background (#dxxxxx-#fxxxxx range)
+            if grep -q '^background #[d-f]' "$kdir/theme.conf" 2>/dev/null; then
                 mode=dark
+            else
+                mode=light
             fi ;;
         *)
             if [[ ! -e "$HOME/cfg/.config/kitty/theme-$mode.conf" ]]; then
