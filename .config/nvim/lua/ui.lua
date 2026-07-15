@@ -10,7 +10,30 @@ vim.api.nvim_create_autocmd('ColorScheme', {
     vim.api.nvim_set_hl(0, 'EndOfBuffer', { bg = 'NONE' })
   end,
 })
-vim.cmd.colorscheme('nightfox')
+
+-- follow the kitty theme: the `theme` zsh command points the
+-- ~/.config/kitty/theme.conf symlink at one of the theme-<name>.conf
+-- palettes; each maps to a colorscheme here (keep in sync when adding one)
+local themes = {
+  dark = { colorscheme = 'nightfox', background = 'dark' },
+  light = { colorscheme = 'tokyonight-day', background = 'light' },
+  storm = { colorscheme = 'tokyonight-storm', background = 'dark' },
+  macchiato = { colorscheme = 'catppuccin-macchiato', background = 'dark' },
+  latte = { colorscheme = 'catppuccin-latte', background = 'light' },
+  dayfox = { colorscheme = 'dayfox', background = 'light' },
+}
+local function apply_kitty_theme()
+  local link = vim.uv.fs_readlink(vim.fn.expand('~/.config/kitty/theme.conf'))
+  local name = link and link:match('theme%-(%w+)%.conf')
+  local theme = themes[name] or themes.dark
+  if vim.g.colors_name ~= theme.colorscheme then
+    vim.o.background = theme.background
+    vim.cmd.colorscheme(theme.colorscheme)
+  end
+end
+apply_kitty_theme()
+-- live-follow `theme` runs in other windows: recheck when nvim regains focus
+vim.api.nvim_create_autocmd('FocusGained', { callback = apply_kitty_theme })
 
 -- mason
 require('mason').setup()
@@ -126,7 +149,9 @@ require('nvim-tree').setup({
 vim.keymap.set('n', '<leader>e', '<CMD>NvimTreeToggle<CR>', { desc = 'Toggle file explorer' })
 
 -- hacker (matrix-green) theme, scoped to NvimTree* groups only
+-- dark mode only: in light mode tokyonight-day's own NvimTree groups apply
 local function nvim_tree_hacker_theme()
+  if vim.o.background == 'light' then return end
   -- matches kitty "Phantom Green": #00ff41 (fg/color2), #39ff14 (color10), #0a0a0a (bg)
   local green, dim, bright = '#00ff41', '#00a82b', '#39ff14'
   local hl = {

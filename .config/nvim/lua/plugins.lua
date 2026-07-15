@@ -86,6 +86,8 @@ require('lazy').setup({
   -- on-demand accurate LaTeX math preview (popup; pairs with the renderer)
   'jbyuki/nabla.nvim',
 
-  -- colorscheme
+  -- colorschemes (one per kitty theme-*.conf; picked in ui.lua)
   { 'EdenEast/nightfox.nvim', lazy = false, priority = 1000 },
+  { 'folke/tokyonight.nvim', lazy = false, priority = 1000 },
+  { 'catppuccin/nvim', name = 'catppuccin', lazy = false, priority = 1000 },
 })
