@@ -28,6 +28,13 @@ local themes = {
   duskfox = { colorscheme = 'duskfox', background = 'dark' },
   dawnfox = { colorscheme = 'dawnfox', background = 'light' },
   amber = { colorscheme = 'carbonfox', background = 'dark' },
+  gruvbox = { colorscheme = 'gruvbox', background = 'dark' },
+  solarized = { colorscheme = 'solarized', background = 'dark' },
+  everforest = { colorscheme = 'everforest', background = 'dark' },
+  outrun = { colorscheme = 'carbonfox', background = 'dark' },
+  redshift = { colorscheme = 'carbonfox', background = 'dark' },
+  eink = { colorscheme = 'tokyonight-day', background = 'light' },
+  nocturne = { colorscheme = 'carbonfox', background = 'dark' },
 }
 local function apply_kitty_theme()
   local link = vim.uv.fs_readlink(vim.fn.expand('~/.config/kitty/theme.conf'))
@@ -168,6 +175,10 @@ local hacker_accents = {
   kgb = { '#00b3ff', '#0072a8', '#33ccff', '#0a0e14' }, -- ice blue
   cia = { '#0b3d66', '#5f7a91', '#0066cc', '#c3d4e3' }, -- navy ink
   amber = { '#ffb000', '#b08d55', '#ffd280', '#0d0a04' }, -- vt220 phosphor
+  outrun = { '#ff2079', '#b39ddb', '#00f0ff', '#120b1e' }, -- neon pink/cyan
+  redshift = { '#ff3b3b', '#b35959', '#ff9e9e', '#0d0404' }, -- red phosphor
+  eink = { '#333333', '#999999', '#222222', '#cfccc6' }, -- charcoal ink
+  nocturne = { '#a89a7e', '#6a6152', '#bfb096', '#0e0d0b' }, -- candlelight
 }
 local function nvim_tree_hacker_theme()
   local accent = hacker_accents[vim.g.kitty_theme]

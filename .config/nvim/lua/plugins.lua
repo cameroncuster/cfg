@@ -90,4 +90,7 @@ require('lazy').setup({
   { 'EdenEast/nightfox.nvim', lazy = false, priority = 1000 },
   { 'folke/tokyonight.nvim', lazy = false, priority = 1000 },
   { 'catppuccin/nvim', name = 'catppuccin', lazy = false, priority = 1000 },
+  { 'ellisonleao/gruvbox.nvim', lazy = false, priority = 1000 },
+  { 'maxmx03/solarized.nvim', lazy = false, priority = 1000 },
+  { 'sainnhe/everforest', lazy = false, priority = 1000 },
 })
