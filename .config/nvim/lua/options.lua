@@ -37,6 +37,31 @@ vim.filetype.add({
 vim.keymap.set('i', 'kj', '<ESC>', { desc = 'the OG keymap!' })
 vim.keymap.set('c', 'W', 'w')
 
+-- leave terminal-mode (the built-in <C-\><C-n> is awkward); single Esc still
+-- reaches the underlying program (lldb/jdb), as does a slow-typed kj
+vim.keymap.set('t', '<Esc><Esc>', [[<C-\><C-n>]], { desc = 'exit terminal-mode' })
+vim.keymap.set('t', 'kj', [[<C-\><C-n>]], { desc = 'exit terminal-mode' })
+
+-- :terminal opened from a keymap lands in normal mode: scroll/search the
+-- output right away, q or Enter closes (Enter mimics :!'s "Press ENTER to
+-- continue"), Ctrl-C interrupts a runaway process without entering
+-- terminal-mode. i enters terminal-mode for interactive programs
+-- (lldb/jdb), kj/EscEsc above leave it again
+vim.api.nvim_create_autocmd('TermOpen', {
+  callback = function()
+    vim.keymap.set('n', 'q', '<CMD>bd!<CR>', { buffer = true, desc = 'close terminal' })
+    vim.keymap.set('n', '<CR>', '<CMD>bd!<CR>', { buffer = true, desc = 'close terminal' })
+    local job = vim.bo.channel
+    vim.keymap.set('n', '<C-c>', function()
+      if vim.fn.jobwait({ job }, 0)[1] == -1 then
+        vim.fn.chansend(job, '\003') -- still running: interrupt (SIGINT)
+      else
+        vim.cmd('bd!') -- already exited: close like q/Enter
+      end
+    end, { buffer = true, desc = 'interrupt process, or close if exited' })
+  end,
+})
+
 -- remember cursor position when reopening files
 vim.api.nvim_create_autocmd('BufReadPost', {
   callback = function()
