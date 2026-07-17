@@ -4,11 +4,13 @@
 # (startup + FocusGained in ui.lua), so the two always agree.
 
 # default to dark on machines where the symlink doesn't exist yet
-[[ -e "$HOME/.config/kitty/theme.conf" ]] ||
+# (skip on boxes without kitty, e.g. headless remotes)
+[[ -d "$HOME/.config/kitty" && ! -e "$HOME/.config/kitty/theme.conf" ]] &&
     ln -sf "$HOME/cfg/.config/kitty/theme-dark.conf" "$HOME/.config/kitty/theme.conf"
 
 theme() {
     local kdir="$HOME/.config/kitty" mode="$1"
+    [[ -d "$kdir" ]] || { echo "theme: no kitty on this machine" >&2; return 1; }
     case "$mode" in
         "")  # no arg: toggle to the default of the other mode
             # light themes have a light background (#dxxxxx-#fxxxxx range)

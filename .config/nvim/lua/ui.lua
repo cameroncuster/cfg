@@ -282,18 +282,22 @@ require('Comment').setup()
 
 -- obsidian
 -- NOTE: point `path` at your Obsidian vault (the folder containing your notes)
-require('obsidian').setup({
-  legacy_commands = false,
-  workspaces = {
-    {
-      name = 'notes',
-      path = '~/notes',
+-- only load on machines where the vault exists (obsidian errors without one)
+local obsidian_vault = vim.fn.expand('~/notes')
+if vim.fn.isdirectory(obsidian_vault) == 1 then
+  require('obsidian').setup({
+    legacy_commands = false,
+    workspaces = {
+      {
+        name = 'notes',
+        path = '~/notes',
+      },
     },
-  },
-  -- the markdown renderer handles in-buffer rendering, so disable obsidian's own
-  -- UI layer to avoid the two fighting over the same elements.
-  ui = { enable = false },
-})
+    -- the markdown renderer handles in-buffer rendering, so disable obsidian's own
+    -- UI layer to avoid the two fighting over the same elements.
+    ui = { enable = false },
+  })
+end
 
 -- render-markdown (full in-buffer markdown rendering)
 -- latex math is rendered to Unicode via the `latex2text` CLI (pylatexenc);
