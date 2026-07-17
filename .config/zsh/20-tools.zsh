@@ -22,7 +22,8 @@ _fzf_compgen_dir() {
 # Must be sourced BEFORE fzf-tab, because fzf's completion widget
 # rebinds ^I (TAB) and would otherwise clobber fzf-tab.
 if command -v fzf >/dev/null 2>&1; then
-    for _fzf in /opt/homebrew/opt/fzf /usr/local/opt/fzf; do
+    for _fzf in /opt/homebrew/opt/fzf /usr/local/opt/fzf \
+        "${HOMEBREW_PREFIX:-/home/linuxbrew/.linuxbrew}/opt/fzf"; do
         if [[ -r $_fzf/shell/completion.zsh && -r $_fzf/shell/key-bindings.zsh ]]; then
             source "$_fzf/shell/completion.zsh" 2>/dev/null
             source "$_fzf/shell/key-bindings.zsh" 2>/dev/null
@@ -30,6 +31,10 @@ if command -v fzf >/dev/null 2>&1; then
         fi
     done
     unset _fzf
+
+    # Fall back to fzf's built-in loader (fzf >= 0.48) when no static
+    # install path matched (e.g. Linux boxes with a bare fzf binary).
+    (( $+widgets[fzf-cd-widget] )) || source <(fzf --zsh) 2>/dev/null
 
     # Only bind custom keys if fzf actually loaded the widgets.
     (( $+widgets[fzf-cd-widget] )) && bindkey '^O' fzf-cd-widget
@@ -43,6 +48,8 @@ for _ft in \
     /usr/local/share/zsh/plugins/fzf-tab/fzf-tab.zsh \
     /opt/homebrew/opt/fzf-tab/share/fzf-tab/fzf-tab.zsh \
     /opt/homebrew/share/zsh-fzf-tab/fzf-tab.plugin.zsh \
+    "${HOMEBREW_PREFIX:-/home/linuxbrew/.linuxbrew}/share/fzf-tab/fzf-tab.zsh" \
+    "$HOME/.local/share/fzf-tab/fzf-tab.zsh" \
     "$HOME/.oh-my-zsh/custom/plugins/fzf-tab/fzf-tab.zsh"; do
     [[ -r $_ft ]] && source $_ft && break
 done

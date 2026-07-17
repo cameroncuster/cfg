@@ -13,3 +13,6 @@ export NVM_DIR="$HOME/.nvm"
 
 # ── Augment workspace ───────────────────────────────────────────
 export BUILD_USER_NAMESPACE="dev-cam"
+
+# enable remote bazel execution (consumed by the augment repo bazel wrapper)
+export BAZEL_RBE_TOKEN=1
