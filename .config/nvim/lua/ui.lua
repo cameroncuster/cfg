@@ -59,6 +59,13 @@ local themes = {
   mars = { colorscheme = 'kitty', background = 'dark' },
   noir = { colorscheme = 'kitty', background = 'dark' },
   sakura = { colorscheme = 'kitty', background = 'light' },
+  vhs = { colorscheme = 'kitty', background = 'dark' },
+  tidepool = { colorscheme = 'kitty', background = 'light' },
+  submarine = { colorscheme = 'kitty', background = 'dark' },
+  honey = { colorscheme = 'kitty', background = 'light' },
+  firefly = { colorscheme = 'kitty', background = 'dark' },
+  cathedral = { colorscheme = 'kitty', background = 'dark' },
+  lava = { colorscheme = 'kitty', background = 'dark' },
 }
 local function apply_kitty_theme()
   local link = vim.uv.fs_readlink(vim.fn.expand('~/.config/kitty/theme.conf'))
