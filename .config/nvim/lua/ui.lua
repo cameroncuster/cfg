@@ -52,6 +52,13 @@ local themes = {
   blueprint = { colorscheme = 'kitty', background = 'dark' },
   easter = { colorscheme = 'kitty', background = 'light' },
   apollo = { colorscheme = 'kitty', background = 'dark' },
+  gameboy = { colorscheme = 'kitty', background = 'dark' },
+  aurora = { colorscheme = 'kitty', background = 'dark' },
+  dune = { colorscheme = 'kitty', background = 'light' },
+  chalkboard = { colorscheme = 'kitty', background = 'dark' },
+  mars = { colorscheme = 'kitty', background = 'dark' },
+  noir = { colorscheme = 'kitty', background = 'dark' },
+  sakura = { colorscheme = 'kitty', background = 'light' },
 }
 local function apply_kitty_theme()
   local link = vim.uv.fs_readlink(vim.fn.expand('~/.config/kitty/theme.conf'))
