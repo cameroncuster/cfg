@@ -15,35 +15,52 @@ vim.api.nvim_create_autocmd('ColorScheme', {
 -- ~/.config/kitty/theme.conf symlink at one of the theme-<name>.conf
 -- palettes; each maps to a colorscheme here (keep in sync when adding one)
 local themes = {
-  dark = { colorscheme = 'nightfox', background = 'dark' },
-  light = { colorscheme = 'tokyonight-day', background = 'light' },
-  storm = { colorscheme = 'tokyonight-storm', background = 'dark' },
+  hacker = { colorscheme = 'nightfox', background = 'dark' },
+  day = { colorscheme = 'tokyonight-day', background = 'light' },
   macchiato = { colorscheme = 'catppuccin-macchiato', background = 'dark' },
   latte = { colorscheme = 'catppuccin-latte', background = 'light' },
-  dayfox = { colorscheme = 'dayfox', background = 'light' },
   kgb = { colorscheme = 'carbonfox', background = 'dark' },
   cia = { colorscheme = 'tokyonight-day', background = 'light' },
-  nordfox = { colorscheme = 'nordfox', background = 'dark' },
-  terafox = { colorscheme = 'terafox', background = 'dark' },
-  duskfox = { colorscheme = 'duskfox', background = 'dark' },
-  dawnfox = { colorscheme = 'dawnfox', background = 'light' },
   amber = { colorscheme = 'carbonfox', background = 'dark' },
-  gruvbox = { colorscheme = 'gruvbox', background = 'dark' },
-  solarized = { colorscheme = 'solarized', background = 'dark' },
   everforest = { colorscheme = 'everforest', background = 'dark' },
-  outrun = { colorscheme = 'carbonfox', background = 'dark' },
   redshift = { colorscheme = 'carbonfox', background = 'dark' },
-  eink = { colorscheme = 'tokyonight-day', background = 'light' },
+  eink = { colorscheme = 'kitty', background = 'light' },
+  einkdark = { colorscheme = 'kitty', background = 'dark' },
   nocturne = { colorscheme = 'carbonfox', background = 'dark' },
+  spring = { colorscheme = 'kitty', background = 'light' },
+  summer = { colorscheme = 'kitty', background = 'light' },
+  autumn = { colorscheme = 'kitty', background = 'dark' },
+  winter = { colorscheme = 'kitty', background = 'dark' },
+  christmas = { colorscheme = 'kitty', background = 'dark' },
+  -- 'kitty' (colors/kitty.lua) mirrors the active kitty palette exactly;
+  -- used where no plugin colorscheme comes close
+  halloween = { colorscheme = 'kitty', background = 'dark' },
+  cobol = { colorscheme = 'kitty', background = 'dark' },
+  google = { colorscheme = 'tokyonight-day', background = 'light' },
+  far = { colorscheme = 'kitty', background = 'dark' },
+  fardark = { colorscheme = 'kitty', background = 'dark' },
+  nordic = { colorscheme = 'nord', background = 'dark' },
+  bourne = { colorscheme = 'kitty', background = 'dark' },
+  ice = { colorscheme = 'kitty', background = 'light' },
+  sleep = { colorscheme = 'kitty', background = 'dark' },
+  darkforest = { colorscheme = 'kitty', background = 'dark' },
+  codeforces = { colorscheme = 'kitty', background = 'light' },
+  coffee = { colorscheme = 'kitty', background = 'dark' },
+  thanksgiving = { colorscheme = 'kitty', background = 'dark' },
+  valentine = { colorscheme = 'kitty', background = 'dark' },
+  abyss = { colorscheme = 'kitty', background = 'dark' },
+  blueprint = { colorscheme = 'kitty', background = 'dark' },
+  easter = { colorscheme = 'kitty', background = 'light' },
+  apollo = { colorscheme = 'kitty', background = 'dark' },
 }
 local function apply_kitty_theme()
   local link = vim.uv.fs_readlink(vim.fn.expand('~/.config/kitty/theme.conf'))
   local name = link and link:match('theme%-(%w+)%.conf')
-  local theme = themes[name] or themes.dark
+  local theme = themes[name] or themes.hacker
   local prev = vim.g.kitty_theme
-  vim.g.kitty_theme = themes[name] and name or 'dark'
+  vim.g.kitty_theme = themes[name] and name or 'hacker'
   -- re-apply on kitty-theme change even if the colorscheme is shared
-  -- (e.g. light/cia) so the ColorScheme autocmd refreshes the accents
+  -- (e.g. day/cia) so the ColorScheme autocmd refreshes the accents
   if vim.g.colors_name ~= theme.colorscheme or prev ~= vim.g.kitty_theme then
     vim.o.background = theme.background
     vim.cmd.colorscheme(theme.colorscheme)
@@ -171,11 +188,10 @@ vim.keymap.set('n', '<leader>e', '<CMD>NvimTreeToggle<CR>', { desc = 'Toggle fil
 -- active colorscheme's own NvimTree groups apply)
 -- { fg, dim, bright, cursorline-bg (kitty background) }
 local hacker_accents = {
-  dark = { '#00ff41', '#00a82b', '#39ff14', '#0a0a0a' }, -- phantom green
+  hacker = { '#00ff41', '#00a82b', '#39ff14', '#0a0a0a' }, -- phantom green
   kgb = { '#00b3ff', '#0072a8', '#33ccff', '#0a0e14' }, -- ice blue
   cia = { '#0b3d66', '#5f7a91', '#0066cc', '#c3d4e3' }, -- navy ink
   amber = { '#ffb000', '#b08d55', '#ffd280', '#0d0a04' }, -- vt220 phosphor
-  outrun = { '#ff2079', '#b39ddb', '#00f0ff', '#120b1e' }, -- neon pink/cyan
   redshift = { '#ff3b3b', '#b35959', '#ff9e9e', '#0d0404' }, -- red phosphor
   eink = { '#333333', '#999999', '#222222', '#cfccc6' }, -- charcoal ink
   nocturne = { '#a89a7e', '#6a6152', '#bfb096', '#0e0d0b' }, -- candlelight
