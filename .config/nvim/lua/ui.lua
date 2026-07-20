@@ -66,6 +66,7 @@ local themes = {
   firefly = { colorscheme = 'kitty', background = 'dark' },
   cathedral = { colorscheme = 'kitty', background = 'dark' },
   lava = { colorscheme = 'kitty', background = 'dark' },
+  powershell = { colorscheme = 'kitty', background = 'dark' },
 }
 local function apply_kitty_theme()
   local link = vim.uv.fs_readlink(vim.fn.expand('~/.config/kitty/theme.conf'))
