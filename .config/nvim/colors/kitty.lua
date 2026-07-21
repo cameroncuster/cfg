@@ -6,7 +6,18 @@
 
 local function parse_kitty_theme()
   local p = {}
-  local f = io.open(vim.fn.expand('~/.config/kitty/theme.conf'))
+  -- prefer the live kitty symlink; on headless remotes (no kitty, so no
+  -- theme.conf) read the palette straight from the cfg source, keyed by the
+  -- theme name forwarded over ssh in LC_KITTY_THEME (see 60-theme.zsh/ui.lua),
+  -- so kitty-mapped themes still render in full truecolor there
+  local path = vim.fn.expand('~/.config/kitty/theme.conf')
+  local f = io.open(path)
+  if not f then
+    local name = vim.env.LC_KITTY_THEME
+    if name then
+      f = io.open(vim.fn.expand('~/cfg/.config/kitty/theme-' .. name .. '.conf'))
+    end
+  end
   if not f then return p end
   for line in f:lines() do
     local k, v = line:match('^(%S+)%s+(#%x%x%x%x%x%x)')
