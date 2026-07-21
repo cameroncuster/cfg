@@ -71,6 +71,10 @@ local themes = {
 local function apply_kitty_theme()
   local link = vim.uv.fs_readlink(vim.fn.expand('~/.config/kitty/theme.conf'))
   local name = link and link:match('theme%-(%w+)%.conf')
+  -- headless remotes have no kitty (so no theme.conf); fall back to the theme
+  -- name forwarded over ssh in LC_KITTY_THEME, so nvim still picks the real
+  -- (truecolor) colorscheme instead of defaulting to hacker
+  if not name then name = vim.env.LC_KITTY_THEME end
   local theme = themes[name] or themes.hacker
   local prev = vim.g.kitty_theme
   vim.g.kitty_theme = themes[name] and name or 'hacker'
