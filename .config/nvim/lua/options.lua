@@ -16,7 +16,13 @@ vim.opt.wildmode = 'list:longest' -- bash-like tab completion
 vim.opt.matchpairs = '(:),{:},[:],<:>' -- <> is not included by default; useful for c++ templates
 vim.opt.clipboard = 'unnamedplus' -- sync nvim and OS clipboard
 vim.opt.ls = 2 -- always show statusline
-vim.opt.termguicolors = true
+-- Headless boxes (e.g. ssh remotes) have no kitty, so nvim can't know which
+-- theme is active. Rather than plumb the name across, just follow the
+-- terminal's live 16-color ANSI palette like every other ssh program: turn
+-- truecolor off here and skip the plugin colorscheme in ui.lua. On kitty boxes
+-- keep truecolor + the real colorschemes.
+vim.g.headless_term = vim.fn.isdirectory(vim.fn.expand('~/.config/kitty')) == 0
+vim.opt.termguicolors = not vim.g.headless_term
 vim.opt.wrap = true -- wrap lines
 vim.opt.linebreak = true -- wrap at word boundaries, not mid-word
 vim.opt.conceallevel = 2 -- conceal markup (e.g. obsidian.nvim links/formatting)

@@ -71,10 +71,6 @@ local themes = {
 local function apply_kitty_theme()
   local link = vim.uv.fs_readlink(vim.fn.expand('~/.config/kitty/theme.conf'))
   local name = link and link:match('theme%-(%w+)%.conf')
-  -- headless remotes have no kitty (so no theme.conf); fall back to the theme
-  -- name forwarded over ssh in LC_KITTY_THEME, so nvim still picks the real
-  -- (truecolor) colorscheme instead of defaulting to hacker
-  if not name then name = vim.env.LC_KITTY_THEME end
   local theme = themes[name] or themes.hacker
   local prev = vim.g.kitty_theme
   vim.g.kitty_theme = themes[name] and name or 'hacker'
@@ -85,9 +81,14 @@ local function apply_kitty_theme()
     vim.cmd.colorscheme(theme.colorscheme)
   end
 end
-apply_kitty_theme()
--- live-follow `theme` runs in other windows: recheck when nvim regains focus
-vim.api.nvim_create_autocmd('FocusGained', { callback = apply_kitty_theme })
+-- Headless boxes (no kitty) have truecolor off (see options.lua): skip the
+-- plugin colorschemes entirely so nvim's default highlights draw from the
+-- terminal's live 16-color palette, matching whatever the local kitty theme is.
+if not vim.g.headless_term then
+  apply_kitty_theme()
+  -- live-follow `theme` runs in other windows: recheck when nvim regains focus
+  vim.api.nvim_create_autocmd('FocusGained', { callback = apply_kitty_theme })
+end
 
 -- mason
 require('mason').setup()
