@@ -23,4 +23,11 @@ bindkey '^P' up-line-or-beginning-search
 bindkey '^N' down-line-or-beginning-search
 
 # ── Prompt (starship) ──────────────────────────────────────────
-eval "$(starship init zsh)"
+# Guard against re-init: re-sourcing this config (e.g. `source ~/.zshrc`)
+# runs starship's init again, and its zle-keymap-select wrapper recurses
+# into itself after 3+ inits -> "maximum nested function level reached"
+# on every vi-mode keymap change. Init exactly once per shell.
+if [[ -z ${_STARSHIP_INITIALIZED:-} ]]; then
+    _STARSHIP_INITIALIZED=1
+    eval "$(starship init zsh)"
+fi
