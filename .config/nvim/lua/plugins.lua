@@ -24,6 +24,7 @@ require('lazy').setup({
   'williamboman/mason.nvim',
 
   -- augment
+  -- TODO: switch from augment to github copilot for completions
   'augmentcode/augment.vim',
 
   -- which-key (keymap discovery)
