@@ -68,15 +68,21 @@ local themes = {
   lava = { colorscheme = 'kitty', background = 'dark' },
   powershell = { colorscheme = 'kitty', background = 'dark' },
 }
-local function apply_kitty_theme()
-  local link = vim.uv.fs_readlink(vim.fn.expand('~/.config/kitty/theme.conf'))
+local function apply_kitty_theme(initial)
+  -- resolve the theme name from the ~/.config/kitty/theme.conf symlink. use
+  -- resolve() (readlink -f) so it works whether the link is relative/absolute
+  -- and even through intermediate links; fall back to fs_readlink.
+  local path = vim.fn.expand('~/.config/kitty/theme.conf')
+  local link = vim.uv.fs_realpath(path) or vim.uv.fs_readlink(path)
   local name = link and link:match('theme%-(%w+)%.conf')
   local theme = themes[name] or themes.hacker
   local prev = vim.g.kitty_theme
   vim.g.kitty_theme = themes[name] and name or 'hacker'
-  -- re-apply on kitty-theme change even if the colorscheme is shared
-  -- (e.g. day/cia) so the ColorScheme autocmd refreshes the accents
-  if vim.g.colors_name ~= theme.colorscheme or prev ~= vim.g.kitty_theme then
+  -- always apply on the initial call so no plugin colorscheme loaded earlier
+  -- (all are lazy=false, priority=1000) leaves its own diff/highlight groups
+  -- behind; afterwards only re-apply when the kitty theme actually changes
+  -- (even if the colorscheme is shared, e.g. day/cia) to refresh accents.
+  if initial or vim.g.colors_name ~= theme.colorscheme or prev ~= vim.g.kitty_theme then
     vim.o.background = theme.background
     vim.cmd.colorscheme(theme.colorscheme)
   end
@@ -85,9 +91,9 @@ end
 -- plugin colorschemes entirely so nvim's default highlights draw from the
 -- terminal's live 16-color palette, matching whatever the local kitty theme is.
 if not vim.g.headless_term then
-  apply_kitty_theme()
+  apply_kitty_theme(true)
   -- live-follow `theme` runs in other windows: recheck when nvim regains focus
-  vim.api.nvim_create_autocmd('FocusGained', { callback = apply_kitty_theme })
+  vim.api.nvim_create_autocmd('FocusGained', { callback = function() apply_kitty_theme() end })
 end
 
 -- mason
@@ -248,9 +254,32 @@ nvim_tree_hacker_theme()
 vim.api.nvim_create_autocmd('ColorScheme', { callback = nvim_tree_hacker_theme })
 
 
--- treesitter (built-in in nvim 0.11+, plugin manages parser installs)
+-- treesitter (built-in highlighting via vim.treesitter.start; nvim-treesitter
+-- main branch only manages parser installs). diffview's git-blob buffers get
+-- no LSP, so they fall back to flat regex syntax unless the treesitter parser
+-- is installed. on each FileType, start highlighting if the parser is present;
+-- otherwise auto-install it (main branch shells out to the tree-sitter CLI,
+-- so only when that's on PATH and the language is one it can build) and start
+-- highlighting once the parser finishes compiling.
 vim.api.nvim_create_autocmd('FileType', {
-  callback = function() pcall(vim.treesitter.start) end,
+  callback = function(ev)
+    if pcall(vim.treesitter.start) then return end
+    if vim.fn.executable('tree-sitter') == 0 then return end
+    local lang = vim.treesitter.language.get_lang(ev.match) or ev.match
+    local nt = require('nvim-treesitter')
+    if vim.list_contains(nt.get_installed(), lang)
+      or not vim.list_contains(nt.get_available(), lang) then
+      return
+    end
+    nt.install({ lang }):await(function(err)
+      if err then return end
+      vim.schedule(function()
+        if vim.api.nvim_buf_is_valid(ev.buf) then
+          pcall(vim.treesitter.start, ev.buf)
+        end
+      end)
+    end)
+  end,
 })
 
 -- nvim-cmp

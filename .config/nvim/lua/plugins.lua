@@ -52,8 +52,8 @@ require('lazy').setup({
   'nvim-tree/nvim-tree.lua',
   'nvim-tree/nvim-web-devicons',
 
-  -- treesitter
-  { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate' },
+  -- treesitter (main branch: built-in highlighting + install() parser API)
+  { 'nvim-treesitter/nvim-treesitter', branch = 'main', build = ':TSUpdate' },
 
   -- autocompletion
   'hrsh7th/nvim-cmp',
